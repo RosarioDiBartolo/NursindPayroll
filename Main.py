@@ -17,6 +17,10 @@ users  = UsersHandler()
 def allowed_file(filename):
     return  filename.endswith('.pdf')
 
+@app.route("/" 
+def index():
+    return "Server running"
+
 @app.route("/login", methods = ["POST"])
 def login():
     data = request.get_json()
