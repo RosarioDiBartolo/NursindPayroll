@@ -17,7 +17,7 @@ users  = UsersHandler()
 def allowed_file(filename):
     return  filename.endswith('.pdf')
 
-@app.route("/" 
+@app.route("/")
 def index():
     return "Server running"
 
