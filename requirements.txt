@@ -19,4 +19,4 @@ pytz==2024.1
 six==1.16.0
 tzdata==2024.1
 Werkzeug==3.0.1
-https://github.com/RosarioDiBartolo/NursindBackend/blob/main/WorkerAnalyzer-0.1.0.tar.gz
+./WorkerAnalyzer-0.1.0.tar.gz
