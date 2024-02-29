@@ -21,22 +21,7 @@ def allowed_file(filename):
 def index():
     return "Server running"
 
-@app.route("/login", methods = ["POST"])
-def login():
-    data = request.get_json()
 
-    print(data)
-
-    email = data.get('email')
-    password = data.get('password')
-    user = users.get(email)
-
-    print(email, password )
-    if user and  bcrypt.check_password_hash(  user.password, password)  :
-        return jsonify(auth= {"token": create_access_token(identity=email), "type": "Bearer"} ,
- userState = {"email": user.email }  ), 200
-    else:
-        return jsonify(message='Invalid credentials'), 401
 @app.route('/analyze', methods=['POST'])
 def process_files_route():
     try:
@@ -64,11 +49,14 @@ def process_files_route():
                 zipf.writestr(".".join( (file_name, "txt")), text)
 
         in_memory_zip.seek(0)
-        return send_file(
+
+        res = send_file(
             in_memory_zip,
             as_attachment=True,
             download_name=zip_filename
         )
+        res.headers.add('Access-Control-Allow-Origin', '*')
+        return res
 
     except Exception as e:
         # Log the actual error for debugging purposes
