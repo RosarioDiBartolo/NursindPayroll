@@ -5,6 +5,7 @@ import zipfile
 
 import PyPDF2
 from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask_cors import cross_origin
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import  create_access_token, create_refresh_token
 from UserInfo import UsersHandler
@@ -23,6 +24,7 @@ def index():
 
 
 @app.route('/analyze', methods=['POST'])
+@cross_origin()
 def process_files_route():
     try:
         now = datetime.datetime.now()
@@ -55,7 +57,6 @@ def process_files_route():
             as_attachment=True,
             download_name=zip_filename
         )
-        res.headers.add('Access-Control-Allow-Origin', '*')
         return res
 
     except Exception as e:
