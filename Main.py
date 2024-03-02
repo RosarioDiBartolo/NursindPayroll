@@ -1,13 +1,12 @@
 import datetime
 import io
-import os
 import zipfile
 
 import PyPDF2
+import pandas
 from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import cross_origin
 from werkzeug.utils import secure_filename
-from flask_jwt_extended import  create_access_token, create_refresh_token
 from UserInfo import UsersHandler
 from config import app, bcrypt
 from WorkersAnalyzer.main import main
@@ -27,42 +26,21 @@ def index():
 @cross_origin()
 def process_files_route():
     try:
-        now = datetime.datetime.now()
-        uploaded_files = request.files.getlist('files')
+        file = request.files['file']
 
-        if not all(allowed_file(file.filename) for file in uploaded_files):
-            return jsonify({"error": "Invalid file type. Only PDF files are allowed."}), 400
+        if not allowed_file(file.filename):
+            return jsonify(error = "File type not allowed: only pdf files are allowed...")
 
-        zip_filename = f"download-{now.strftime('%Y%m%d%H%M%S')}.zip"
-        in_memory_zip = io.BytesIO()
+        block = PDFBlock.from_file(file)
 
-        with zipfile.ZipFile(in_memory_zip, 'a', zipfile.ZIP_DEFLATED, False) as zipf:
-            for file_storage in uploaded_files:
-                block = PDFBlock(PyPDF2.PdfReader(file_storage.stream).pages)
-                PData, values, name = main(block, PisaExtractor())
+        PData, values, name = main(block, PisaExtractor() )
 
-
-                if not secure_filename(file_storage.filename):
-                    return jsonify({"error": "Invalid file name"}), 400
-
-                file_name = file_storage.filename.removesuffix(".pdf")
-
-                text = "\n".join([name, values.to_string()])
-                zipf.writestr(".".join( (file_name, "txt")), text)
-
-        in_memory_zip.seek(0)
-
-        res = send_file(
-            in_memory_zip,
-            as_attachment=True,
-            download_name=zip_filename
-        )
-        return res
+        return jsonify( values = values.to_json() , name = name ), 200
 
     except Exception as e:
         # Log the actual error for debugging purposes
         app.logger.error(str(e))
-        return jsonify({"error": "Internal Server Error"}), 500
+        return jsonify(error = "Internal Server Error"), 500
 
 
 
