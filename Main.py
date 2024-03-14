@@ -2,7 +2,6 @@
 import io
 import traceback
 
-import pandas as pd
 import requests
 from WorkersAnalyzers.BPC import crawler
 from flask import   request, jsonify, send_file
