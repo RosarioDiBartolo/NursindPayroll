@@ -3,7 +3,6 @@ import io
 import traceback
 
 import requests
-from WorkersAnalyzers.BPC import crawler
 from flask import   request, jsonify, send_file
 from flask_cors import cross_origin
 from config import app
@@ -83,7 +82,7 @@ def process_files_route():
         # Log the actual error for debugging purposes
 
         app.logger.error(traceback.format_exc())
-        return jsonify(error = "Internal Server Error"), 500
+        return jsonify(error = e), 500
 
 
 
