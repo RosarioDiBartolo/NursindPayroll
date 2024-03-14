@@ -68,7 +68,7 @@ def pages(files):
 def process_files_route():
     try:
         files = list(request.files.values())
-
+        app.logger.debug("Processing files: " +  " ".join( [file.name for file in  files] ) )
         extractor = UserExtractor([PisaExtractor(p) for p in pages(files)])
 
         Values = extractor.elaborate().apply(
