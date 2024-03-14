@@ -82,7 +82,7 @@ def process_files_route():
         # Log the actual error for debugging purposes
 
         app.logger.error(traceback.format_exc())
-        return jsonify(error = e), 500
+        return jsonify(error = str(e)), 500
 
 
 
