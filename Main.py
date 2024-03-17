@@ -2,7 +2,6 @@
 import io
 import traceback
 
-import pandas as pd
 import requests
 from flask import   request, jsonify, send_file
 from flask_cors import cross_origin
@@ -70,14 +69,6 @@ extractorsTable = {
 }
 @app.route('/analyze/<extractor>', methods=['POST'])
 @cross_origin()
-
-def process_year(Anno):
-    data = Anno["Turno"].value_counts().to_dict()
-    data["Mattina"] = data.get("Mattina", 0)
-    data["Pomeriggio"] = data.get("Pomeriggio", 0)
-    data["Notte"] = data.get("Notte", 0)
-
-    return data
 def process_files_route(extractor):
     try:
         page_extractor = extractorsTable[extractor]
@@ -86,12 +77,10 @@ def process_files_route(extractor):
         User = UserExtractor([page_extractor(p) for p in pages(files)])
 
         Values = User.elaborate().apply(
-           process_year
+            lambda Anno: Anno["Turno"].value_counts().to_dict()
         ).to_dict()
 
         print(User.name)
-
-
 
         return jsonify( Values =  Values , Nome = User.name )
 
