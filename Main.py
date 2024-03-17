@@ -7,6 +7,7 @@ from flask import   request, jsonify, send_file
 from flask_cors import cross_origin
 from config import app
 from WorkersAnalyzer.Core import PDFIterator
+from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.UserExtractor import UserExtractor
 from WorkersAnalyzer.BPC import crawler
@@ -62,21 +63,26 @@ def request_bustapaga():
 def pages(files):
     return [page  for file in files for page in  PDFIterator(  file )    ]
 
-
-@app.route('/analyze', methods=['POST'])
+extractorsTable = {
+    "Pisa": PisaExtractor,
+    "Policlinico": PoliclinicoExtractor
+}
+@app.route('/analyze/<extractor>', methods=['POST'])
 @cross_origin()
-def process_files_route():
+def process_files_route(extractor):
     try:
+        page_extractor = extractorsTable[extractor]
         files = list(request.files.values())
         app.logger.debug("Processing files: " +  " ".join( [file.name for file in  files] ) )
-        extractor = UserExtractor([PisaExtractor(p) for p in pages(files)])
+        User = UserExtractor([page_extractor(p) for p in pages(files)])
 
-        Values = extractor.elaborate().apply(
+        Values = User.elaborate().apply(
             lambda Anno: Anno["Turno"].value_counts().to_dict()
         ).to_dict()
 
+        print(User.name)
 
-        return jsonify( Values =  Values , Nome = extractor.name )
+        return jsonify( Values =  Values , Nome = User.name )
 
     except Exception as e:
         # Log the actual error for debugging purposes
