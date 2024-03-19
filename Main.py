@@ -9,7 +9,7 @@ from config import app
 from WorkersAnalyzer.Core import PDFIterator
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.PisaExtractor import PisaExtractor
-from WorkersAnalyzer.UserExtractor import UserExtractor
+from UserExtractor import UserExtractor
 from WorkersAnalyzer.BPC import crawler
 
 
