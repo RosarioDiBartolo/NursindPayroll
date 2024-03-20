@@ -9,7 +9,7 @@ from config import app
 from WorkersAnalyzer.Core import PDFIterator
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.PisaExtractor import PisaExtractor
-from UserExtractor import UserExtractor
+from WorkersAnalyzer.Extractors.UserExtractor import UserExtractor
 from WorkersAnalyzer.BPC import crawler
 
 
@@ -67,6 +67,17 @@ extractorsTable = {
     "Pisa": PisaExtractor,
     "Policlinico": PoliclinicoExtractor
 }
+
+
+
+def process_year(Anno):
+
+    Count = Anno["Turno"].value_counts().to_dict()
+    print(Count)
+    Count["DomenicheMattina"] = len( Anno[ (Anno["Turno"] == "Mattina") & ((Anno["Settimana"] == "Dom") | (Anno["Settimana"] == "Sab"))  ] )
+    return Count
+
+
 @app.route('/analyze/<extractor>', methods=['POST'])
 @cross_origin()
 def process_files_route(extractor):
@@ -74,15 +85,13 @@ def process_files_route(extractor):
         page_extractor = extractorsTable[extractor]
         files = list(request.files.values())
         app.logger.debug("Processing files: " +  " ".join( [file.name for file in  files] ) )
-        User = UserExtractor([page_extractor(p) for p in pages(files)])
+        User = UserExtractor([page_extractor(p) for p in pages(files) ])
 
-        Values = User.elaborate().apply(
-            lambda Anno: Anno["Turno"].value_counts().to_dict()
-        ).to_dict()
-
+        Anni  = User.elaborate()
+        Values = Anni.apply( process_year ).to_dict()
         print(User.name)
 
-        return jsonify( Values =  Values , Nome = User.name )
+        return jsonify( Values =  Values , Nome = User.name  )
 
     except Exception as e:
         # Log the actual error for debugging purposes
