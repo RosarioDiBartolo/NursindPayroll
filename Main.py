@@ -1,105 +1,100 @@
-
 import io
 import traceback
-
-import requests
-from flask import   request, jsonify, send_file
+from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import cross_origin
-from config import app
+import requests
+from WorkersAnalyzer.BPC import crawler
+from WorkersAnalyzer.BPC.crawler import crawl, mesi
 from WorkersAnalyzer.Core import PDFIterator
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
-from WorkersAnalyzer.PisaExtractor import PisaExtractor
+from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.Extractors.UserExtractor import UserExtractor
-from WorkersAnalyzer.BPC import crawler
+from config import app, port
 
+app = Flask(__name__)
 
-def allowed_file(filename):
-    return  filename.endswith('.pdf')
-
+# Routes
 @app.route("/")
 def index():
     return "Server running"
 
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
 
-@app.route('/login', methods=['POST'])
+# Session Storage
+CrawlingSessions = dict()
+
+# Login route
+@app.route('/request/login', methods=['POST'])
 def login():
-    try:
-        body = request.get_json()  # Use get_json() instead of json()
-        print(body)
-        # Assuming 'crawler' is defined and login method returns a session object
+    body = request.get_json()
+    username, password = body.get("username", None), body.get("password", None)
+    if username and password:
+        session = crawler.login(username, password)
+        cookies = requests.utils.dict_from_cookiejar(session.cookies)
+        return jsonify(cookies), 200
+    return jsonify({'message': 'Missing username or password'}), 400
 
-        session = crawler.login(body.get('username'), body.get('password'))
-
-        return jsonify( session.cookies.get_dict() )
-    except Exception as e:
-        print(f"Error during login: {e}")
-        return jsonify({'error': 'Failed to process login'}), 500
-
-@app.route('/request' ,methods=['POST']  )
+# Request bustapaga route
+@app.route('/request', methods=['POST'])
 def request_bustapaga():
     try:
-        body = request.get_json()  # Use get_json() instead of json()
-         # Assuming 'crawler' is defined and login method returns a session object
-
+        body = request.get_json()
         session = requests.session()
-        session.cookies.update( body.get('cookies') )
+        session.cookies.update(body["Cookies"])
 
         year, month, username = body.get('year'), body.get('month'), body.get('username')
 
-        content = crawler.crawl( session, year, month, username  )
+        fileRequest = crawl(session, year, mesi[month], username)
 
         return send_file(
-            io.BytesIO(content),
+            io.BytesIO(fileRequest.content),
             as_attachment=True,
             download_name=f"{username}-{year}-{month}.pdf",
             mimetype="application/pdf"
-        ), 200
-
+        )
+    except KeyError as err:
+        return jsonify({'error': f"Missing required param: {err}"})
     except Exception as e:
-        print(f"Error during request: {e}")
+        print(f"Error during request: {traceback.format_exc()}")
         return jsonify({'error': str(e)}), 500
 
+# Error handler
+@app.errorhandler(500)
+def internal_error(exception):
+    print(exception)
+    print("500 error caught")
+    print(traceback.format_exc())
 
-def pages(files):
-    return [page  for file in files for page in  PDFIterator(  file )    ]
-
+# Extractor Table
 extractorsTable = {
     "Pisa": PisaExtractor,
     "Policlinico": PoliclinicoExtractor
 }
 
-
-
+# Process year function
 def process_year(Anno):
-
     Count = Anno["Turno"].value_counts().to_dict()
-    print(Count)
-    Count["DomenicheMattina"] = len( Anno[ (Anno["Turno"] == "Mattina") & ((Anno["Settimana"] == "Dom") | (Anno["Settimana"] == "Sab"))  ] )
+    Count["DomenicheMattina"] = len(Anno[(Anno["Turno"] == "Mattina") & ((Anno["Settimana"] == "Dom") | (Anno["Settimana"] == "Sab"))])
     return Count
 
-
+# Analyze route
 @app.route('/analyze/<extractor>', methods=['POST'])
 @cross_origin()
 def process_files_route(extractor):
-    try:
-        page_extractor = extractorsTable[extractor]
-        files = list(request.files.values())
-        app.logger.debug("Processing files: " +  " ".join( [file.name for file in  files] ) )
-        User = UserExtractor([page_extractor(p) for p in pages(files) ])
+    page_extractor = extractorsTable[extractor]
+    files = list(request.files.values())
+    app.logger.debug("Processing files: " +  " ".join([file.name for file in files]))
+    pages = [page for file in files for page in PDFIterator(file)]
 
-        Anni  = User.elaborate()
-        Values = Anni.apply( process_year ).to_dict()
-        print(User.name)
+    User = UserExtractor([page_extractor(p) for p in pages])
+    Anni = User.elaborate()
+    Values = Anni.apply(process_year).to_dict()
 
-        return jsonify( Values =  Values , Nome = User.name  )
+    return jsonify(Values=Values, Nome=User.name)
 
-    except Exception as e:
-        # Log the actual error for debugging purposes
-
-        app.logger.error(traceback.format_exc())
-        return jsonify(error = str(e)), 500
-
-
-
+# Main
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=8080)
+    app.run(host='0.0.0.0', debug=True, port=port)
+
