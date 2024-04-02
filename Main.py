@@ -26,6 +26,8 @@ def serve_static(filename):
 CrawlingSessions = dict()
 
 # Login route
+@cross_origin()
+
 @app.route('/request/login', methods=['POST'])
 def login():
     body = request.get_json()
@@ -37,6 +39,7 @@ def login():
     return jsonify({'message': 'Missing username or password'}), 400
 
 # Request bustapaga route
+@cross_origin()
 @app.route('/request', methods=['POST'])
 def request_bustapaga():
     try:
