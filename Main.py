@@ -18,17 +18,12 @@ app = Flask(__name__)
 def index():
     return "Server running"
 
-@app.route('/static/<path:filename>')
-def serve_static(filename):
-    return send_from_directory('static', filename)
-
 # Session Storage
 CrawlingSessions = dict()
 
 # Login route
-@cross_origin()
-
 @app.route('/request/login', methods=['POST'])
+@cross_origin()
 def login():
     body = request.get_json()
     username, password = body.get("username", None), body.get("password", None)
@@ -38,9 +33,8 @@ def login():
         return jsonify(cookies), 200
     return jsonify({'message': 'Missing username or password'}), 400
 
-# Request bustapaga route
-@cross_origin()
 @app.route('/request', methods=['POST'])
+@cross_origin()
 def request_bustapaga():
     try:
         body = request.get_json()
