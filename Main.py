@@ -1,6 +1,6 @@
 import io
 import traceback
-from flask import Flask, jsonify, send_file, send_from_directory, request
+from flask import Flask, jsonify, send_file,    request
 from flask_cors import cross_origin
 import requests
 from WorkersAnalyzer.BPC import crawler
@@ -9,6 +9,7 @@ from WorkersAnalyzer.Core import PDFIterator
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.Extractors.UserExtractor import UserExtractor
+from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
 from config import app, port
 
 app = Flask(__name__)
@@ -67,7 +68,8 @@ def internal_error(exception):
 # Extractor Table
 extractorsTable = {
     "Pisa": PisaExtractor,
-    "Policlinico": PoliclinicoExtractor
+    "Policlinico": PoliclinicoExtractor,
+    "Garibaldi":  GaribaldiExtractor
 }
 
 # Process year function

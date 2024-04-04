@@ -20,4 +20,5 @@ six==1.16.0
 tzdata==2024.1
 Werkzeug==3.0.1
 gunicorn==21.2.0
+requests
 git+https://github.com/RosarioDiBartolo/WorkersAnalyzer.git@3.0#egg=WorkersAnalyzer
