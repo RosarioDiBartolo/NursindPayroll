@@ -10,6 +10,8 @@ from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.Extractors.UserExtractor import UserExtractor
 from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
+from WorkersAnalyzer.Extractors.MarcheExtractor import MarcheExtractor
+
 from config import app, port
 
 app = Flask(__name__)
@@ -69,7 +71,8 @@ def internal_error(exception):
 extractorsTable = {
     "Pisa": PisaExtractor,
     "Policlinico": PoliclinicoExtractor,
-    "Garibaldi":  GaribaldiExtractor
+    "Garibaldi":  GaribaldiExtractor,
+    "Marche": MarcheExtractor
 }
 
 # Process year function
