@@ -21,6 +21,8 @@ app = Flask(__name__)
 def index():
     return "Server running"
 
+
+
 # Session Storage
 CrawlingSessions = dict()
 
@@ -75,6 +77,10 @@ extractorsTable = {
     "Marche": MarcheExtractor
 }
 
+@app.route("/aziende", methods= ["GET"])
+@cross_origin()
+def Aziende():
+    return jsonify(list(extractorsTable.keys())), 200
 # Process year function
 def process_year(Anno):
     Count = Anno["Turno"].value_counts().to_dict()
