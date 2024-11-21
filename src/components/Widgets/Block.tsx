@@ -59,7 +59,7 @@ function Block({ Block }: { Block: File }) {
       setStatus((prev) => ({ ...prev, type: "loading" }));
 
       console.log("Waiting for a response...");
-
+ 
       response
         .then((response) => {
           console.log("Request finished");

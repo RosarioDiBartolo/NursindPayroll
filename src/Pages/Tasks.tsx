@@ -7,6 +7,8 @@ import  Block from "../components/Widgets/Block";
 function Tasks() {
     
   const [files, setFiles] = useFiles()
+
+  console.log(files)
   return (
     <div className="flex flex-col  ">
       {files.length  > 0 ? (
@@ -18,7 +20,7 @@ function Tasks() {
         </h3>
       )}
       <footer className="flex  w-[100%] my-6 ">
-        <FileUploader className=" bg-green-300 transition-all hover:bg-green-500 active:bg-green-100 active:text-green-500 px-3 py-2 text-white" setFiles={setFiles}
+        <FileUploader multiple className=" bg-green-300 transition-all hover:bg-green-500 active:bg-green-100 active:text-green-500 px-3 py-2 text-white" setFiles={setFiles}
          >
           Aggiungi analisi...
         </FileUploader>

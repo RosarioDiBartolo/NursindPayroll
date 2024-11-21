@@ -7,7 +7,8 @@ import MyNavBar from "@/components/Widgets/MyNavBar";
 export default function Layout() {
   return (
     <div className='h-screen flex flex-col '>
-    <MyNavBar/>
+    
+    <header className=" sticky top-0 z-20 bg-white"> <MyNavBar/></header>
     <div className="flex flex-1">
       <Sidebar />
   

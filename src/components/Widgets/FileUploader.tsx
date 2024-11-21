@@ -14,7 +14,7 @@ export const useFiles = ()=>{
 const FileUploader = (  { children, setFiles, className, multiple = false } : Props ) => {
   
   const InputRef = useRef<HTMLInputElement>(null)
-
+  console.log( InputRef.current?.files)
   return (
     <> 
       <button onClick={()=> InputRef.current?.click()} className={className}  >{children}</button>
