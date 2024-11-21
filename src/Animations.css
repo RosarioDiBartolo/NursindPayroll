@@ -1,0 +1,26 @@
+@keyframes disappearElipsis {
+    0% { content: ""; }
+    25% { content: "."; color: #999; }
+    50% { content: ".."; color: #666; }
+    75% { content: "..."; color: #333; }
+    100% { content: "..."; color: #000; }
+}
+@keyframes jumpEllipsis {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.elipsis::after{
+    content: "";
+    animation-duration: 1s; /* Adjust duration as needed */
+    animation-iteration-count: infinite; /* Loop the animation infinitely */
+    animation-timing-function: ease-in-out; /* Add an easing function */
+}
+.elipsis.disappear::after {
+    animation-name: disappearElipsis;
+}
+
+
+.elipsis.jump::after {
+     animation-name: jumpEllipsis;
+ }
