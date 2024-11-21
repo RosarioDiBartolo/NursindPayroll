@@ -1,6 +1,6 @@
 import CauseProcess from '@/components/Widgets/CauseProcess';
 import FileUploader, { useFiles } from '@/components/Widgets/FileUploader'
-import { IoIosCloudUpload, IoIosCloudDownload } from "react-icons/io";
+import { IoIosCloudUpload  } from "react-icons/io";
 
  
 function Cause() {

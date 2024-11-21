@@ -1,4 +1,3 @@
-import React from 'react'
 import { IoIosCloudDownload } from 'react-icons/io'
 
 function CauseProcess({ file}: { file: File}) {

@@ -15,8 +15,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { ReactNode } from "react";
-import { ChildrenProps } from "@/lib/ReactUtils";
 
 const components: { title: string; href: string; description: string }[] = [
   {

@@ -32,7 +32,7 @@ export interface AnalysisData {
 }
  
 
-export type Azienda = undefined | "Policlinico" | "Pisa" | "Garibaldi";
+export type Azienda = undefined | "Policlinico" | "Pisa" | "Garibaldi" | "Marche";
 function Block({ Block }: { Block: File }) {
   const [Azienda, setAzienda] = useState<Azienda>();
 

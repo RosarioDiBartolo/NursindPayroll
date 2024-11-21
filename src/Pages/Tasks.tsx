@@ -14,13 +14,13 @@ function Tasks() {
       ) : (
         <h3 className="text-slate-600 rounded-sm  text-opacity-90 ">
           Comincia l'analisi dei pdf di dipendenti di diverse aziende
-          nell'ambito sanitario: <code>Azienda Pisa, Policlinico</code>
+          nell'ambito sanitario: <code>Azienda Pisa, Policlinico e Marche</code>
         </h3>
       )}
       <footer className="flex  w-[100%] my-6 ">
-        <FileUploader setFiles={setFiles}
+        <FileUploader className=" bg-green-300 transition-all hover:bg-green-500 active:bg-green-100 active:text-green-500 px-3 py-2 text-white" setFiles={setFiles}
          >
-          Aggiungi analisi ...
+          Aggiungi analisi...
         </FileUploader>
       </footer>
 

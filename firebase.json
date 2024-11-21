@@ -8,10 +8,10 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",  // Adjust the source path
+        "source": "/api/**",
         "destination": "https://nursindbackend.onrender.com/:path",
         "headers": {
-          "Access-Control-Allow-Origin": "*"  
+          "Access-Control-Allow-Origin": "*"
         }
       },
       {

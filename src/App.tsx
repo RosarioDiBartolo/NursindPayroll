@@ -33,7 +33,7 @@ function App() {
         <Route path="/buste-paga" element={ <ProtectedRoute  Comp={BustePagaLayout}  />} >
 
           <Route path='/buste-paga/' element = {<BustePaga />} />
-
+          
         </Route>
 
 
