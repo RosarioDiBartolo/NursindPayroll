@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Crawler from "@/components/widgets/Crawler";
 import { BustePagaContext } from "./Context";
-import axios from "axios";
-import { cn } from "@/lib/utils";
+import apiClient, { cn } from "@/lib/utils";
 interface AuthState {
   type: "loading" | "success" | "error" | "undefined";
   data?: object;
@@ -42,7 +41,7 @@ function BustePaga() {
           <Button
             className="flex items-center gap-2 m-3 my-6 hover:bg-slate-500 hover:text-slate-900  "
             onClick={() => {
-              axios
+              apiClient
                 .post(
                   "/api/login",
                   {

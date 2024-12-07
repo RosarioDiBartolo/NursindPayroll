@@ -6,8 +6,8 @@ import { saveAs } from "file-saver";
 import { IoStopCircleOutline } from "react-icons/io5";
 import { VscDebugStart } from "react-icons/vsc";
 import { SaveAllIcon } from "lucide-react";
-import axios from "axios";
-
+import apiClient from "@/lib/utils";
+ 
 
 const Crawler = () => {
   const [filesCrawlState, setFilesCrawlState] = useState<CrawlState[]>([]);
@@ -28,7 +28,7 @@ const Crawler = () => {
       });
 
       try {
-        const res = await axios.post("/api/request",{
+        const res = await apiClient.post("/api/request",{
           year,
           month,
           Cookies,

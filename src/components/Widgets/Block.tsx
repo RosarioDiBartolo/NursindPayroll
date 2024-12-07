@@ -17,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios, { AxiosError } from "axios";
+import   { AxiosError } from "axios";
+import apiClient from "@/lib/utils";
 
 type YearData = {
   DomenicheSabatiMattina: number;
@@ -67,7 +68,7 @@ function Differenziale({ file }: BlockProps) {
 
     setStatus({ type: "loading", message: "Calcolo in corso..." });
 
-    axios
+    apiClient
       .post(`/api/differenziale/Policlinico`, formData)
       .then((response) => {
         setDifferenziale(response.data);
@@ -117,7 +118,16 @@ function Differenziale({ file }: BlockProps) {
 }
 
 function Conteggio({ file }: BlockProps) {
-  const [Azienda, setAzienda] = useState<Azienda>();
+  const [aziendeDisponibili, setAziendeDisponibili ]  = useState<string[]>([])
+  useEffect(()=>{
+    const fetchAziende = async ()=>{
+      setAziendeDisponibili( (await apiClient.get("/api/aziende")).data )
+
+    }
+
+    fetchAziende
+   },[])
+  const [Azienda, setAzienda] = useState<string>();
   const [conteggio, setConteggio] = useState<DataConteggio>({
     Nome: file.name,
     Values: [],
@@ -141,7 +151,7 @@ function Conteggio({ file }: BlockProps) {
 
     try {
       setStatus({ type: "loading", message: "Analisi in corso..." });
-      const response = await axios.post(`/api/conteggio/${Azienda}`, formData);
+      const response = await apiClient.post(`/api/conteggio/${Azienda}`, formData);
       setConteggio(response.data);
       setStatus({
         type: "success",
@@ -253,15 +263,18 @@ function Conteggio({ file }: BlockProps) {
             <p className="text-green-500 mt-2">{Status.message as string}</p>
           )}
         </div>
-        <Select onValueChange={(value) => setAzienda(value as Azienda)}>
+        <Select onValueChange={(value) => setAzienda(value  )}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Seleziona Azienda" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Policlinico">Policlinico</SelectItem>
-            <SelectItem value="Pisa">Pisa</SelectItem>
-            <SelectItem value="Garibaldi">Garibaldi</SelectItem>
-            <SelectItem value="Marche">Marche</SelectItem>
+            {
+              aziendeDisponibili.map((a)=>(
+                <SelectItem key={a} value={a}>{a}</SelectItem>
+
+              ))
+            }
+             
           </SelectContent>
         </Select>
       </div>
