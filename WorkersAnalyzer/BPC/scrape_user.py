@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-from WorkersAnalyzer.BPC.crawler import login, crawl, mesi
+from .crawler import login, crawl, mesi
 
 
 class FileCache:

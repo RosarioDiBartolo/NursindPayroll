@@ -2,7 +2,7 @@ import datetime
 
 import pandas as pd
 
-from backend.WorkersAnalyzer.Core import PDFIterator
+from ..Core  import PDFIterator
 from .PisaExtractor import PisaExtractor
 
 

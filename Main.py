@@ -7,12 +7,10 @@ import pandas as pd
 from flask import Flask, jsonify, send_file, Response,   request
 from flask_cors import cross_origin
 import requests
-from WorkersAnalyzer.BPC import crawler
-from WorkersAnalyzer.BPC.crawler import crawl, mesi
+from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
 from WorkersAnalyzer.Core import PDFIterator, turno
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
-from WorkersAnalyzer.Extractors.UserExtractor import UserExtractor
 from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
 from WorkersAnalyzer.Extractors.MarcheExtractor import MarcheExtractor
 from WorkersAnalyzer.Extractors.PageExtractor import PageExtractor
@@ -37,7 +35,7 @@ def login():
     body = request.get_json()
     username, password = body.get("username", None), body.get("password", None)
     if username and password:
-        session = crawler.login(username, password)
+        session = login(username, password)
         cookies = requests.utils.dict_from_cookiejar(session.cookies)
         return jsonify(cookies), 200
     return jsonify({'message': 'Missing username or password'}), 400
