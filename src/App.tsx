@@ -7,12 +7,10 @@ import {
 } from "react-router-dom";
 import Login from './Pages/Login';
 import ProtectedRoute from './components/HOC/ProtectedRoute';
-import BustePagaLayout from './Pages/BustePagaLayout';
 import BustePaga  from './Pages/BustePaga';
 import Layout from './Pages/Layout';
 import Tasks from './Pages/Tasks';
-import "./Animations.css"
-import Cause from './Pages/Cause';
+import "./Animations.css" 
 function App() {
   
 
@@ -26,15 +24,11 @@ function App() {
         <Route  path="/" element = {<ProtectedRoute Comp={Layout}  />  } >
 
           <Route path = "/" index element={ <Tasks   /> } />
-          <Route path = "/cause" index element={ <Cause   /> } />
-
+ 
         </Route>
         
-        <Route path="/buste-paga" element={ <ProtectedRoute  Comp={BustePagaLayout}  />} >
-
-          <Route path='/buste-paga/' element = {<BustePaga />} />
-          
-        </Route>
+        <Route path="/buste-paga" element={ <ProtectedRoute  Comp={BustePaga}  />} />
+ 
 
 
         <Route path="/login" element={ <Login />} />

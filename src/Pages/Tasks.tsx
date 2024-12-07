@@ -1,6 +1,6 @@
 // Import necessary libraries
-import FileUploader, { useFiles } from "../components/Widgets/FileUploader";
-import  Block from "../components/Widgets/Block";
+import FileUploader, { useFiles } from "../components/widgets/FileUploader";
+import  Block from "../components/widgets/Block";
  
 
 // Main TasksPage component
@@ -12,7 +12,7 @@ function Tasks() {
   return (
     <div className="flex flex-col  ">
       {files.length  > 0 ? (
-        files.map((block, idx) => <Block key={idx} Block={block} />)
+        files.map((block, idx) => <Block key={idx} file={block} />)
       ) : (
         <h3 className="text-slate-600 rounded-sm  text-opacity-90 ">
           Comincia l'analisi dei pdf di dipendenti di diverse aziende

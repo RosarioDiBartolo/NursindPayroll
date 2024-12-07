@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -10,9 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { backend } from "@/config";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { XIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -20,186 +17,289 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { value, AnalysisStateInfo, AnalysisState, Year } from "./Year";
+import axios, { AxiosError } from "axios";
 
 type YearData = {
-  [year: string]: value; // Specify the index signature type as 'string'
+  DomenicheSabatiMattina: number;
+  Mattina: number;
+  Pomeriggio: number;
+  Notte: number;
+  Anno: number;
 };
 
-export interface AnalysisData {
+export interface DataConteggio {
   Nome: string;
-  Values: YearData;
+  Values: YearData[];
 }
- 
 
-export type Azienda = undefined | "Policlinico" | "Pisa" | "Garibaldi" | "Marche";
-function Block({ Block }: { Block: File }) {
-  const [Azienda, setAzienda] = useState<Azienda>();
+export type Azienda =
+  | "Policlinico"
+  | "Pisa"
+  | "Garibaldi"
+  | "Marche"
+  | undefined;
 
-  const [BlockState, setBlockState] = useState<AnalysisData>({
-    Nome: Block.name,
-    Values: {},
-  });
+interface BlockProps {
+  file: File;
+}
 
-  const [Status, setStatus] = useState<AnalysisStateInfo>({
+type DataDifferenziale = {
+  Nome: string;
+  entrate: number;
+  uscite: number;
+};
+interface AnalysisStateInfo<T>{
+  message: T| string;
+  type: "loading" | "default" | "success" | "error";
+}
+function Differenziale({ file }: BlockProps) {
+  const [Status, setStatus] = useState<AnalysisStateInfo<DataDifferenziale>>({
     type: "default",
-    message: Block.name,
+    message: "Pronto a calcolare il differenziale",
   });
+  const [differenziale, setDifferenziale] = useState<DataDifferenziale | null>(
+    null
+  );
 
-  const analyze = () => {
+  const calculateDifferenziale = () => {
     const formData = new FormData();
-    formData.append(Block.name, Block);
-    if (Azienda) {
-      const response = backend.path(`/analyze/${Azienda}`).post(formData, {
-         headers: {
-          "Access-Control-Allow-Origin": "*"
-         }
+    formData.append("file", file);
+
+    setStatus({ type: "loading", message: "Calcolo in corso..." });
+
+    axios
+      .post(`/api/differenziale/Policlinico`, formData)
+      .then((response) => {
+        setDifferenziale(response.data);
+        setStatus({ type: "success", message: "Calcolo completato" });
+      })
+      .catch((error) => {
+        setStatus({ type: "error", message: `Errore: ${error.message}` });
       });
-
-      setStatus((prev) => ({ ...prev, type: "loading" }));
-
-      console.log("Waiting for a response...");
- 
-      response
-        .then((response) => {
-          console.log("Request finished");
-
-          setBlockState(response.data as AnalysisData);
-          setStatus({
-            type: "success",
-            message: "Operazione avvenuta con successo",
-          });
-        })
-        .catch((error) => {
-          setStatus({ type: "error", message: error as string });
-        });
-    }
   };
 
-  console.log(Status);
-
-  const Totale = useMemo(() => {
-    const Tot: value = {
-      Pomeriggio: 0,
-      Mattina: 0,
-      Notte: 0,
-      DomenicheMattina: 0,
-    };
-
-    Object.values(BlockState.Values).forEach((values) => {
-      Tot.Pomeriggio = Tot.Pomeriggio || 0 + (values.Pomeriggio || 0);
-      Tot.Mattina = Tot.Mattina || 0 + (values.Mattina || 0);
-      Tot.Notte = Tot.Notte || 0 + (values.Notte || 0);
-      Tot.DomenicheMattina =
-        Tot.DomenicheMattina || 0 + (values.DomenicheMattina || 0);
-    });
-
-    return Tot;
-  }, [BlockState]);
-  
-
-  const ConversionTable: Record<AnalysisState, React.ReactNode> = {
-    default: "",
-    success: (
-     <>Operazione completata</>   
-    ),
-    loading: <LoadingSpinner className="w-full" />,
-
-    error: (
-      <span className="flex">
-        Errore nel processare i dati... <XIcon className="text-red-700" />{" "}
-      </span>
-    ),
-  };
   return (
-    <div className="m-3 overflow-hidden   border-b-0 shadow-lg shadow-slate-400  text-white border-muted border-2">
+    <div className=" text-white">
+      <h2 className=" bg-slate-800 p-1 px-3">{differenziale?.Nome}</h2>
       <Table className="overflow-hidden bg-slate-800 ">
-        <TableCaption className="text-nowrap absolute hover:text-white"></TableCaption>
-        <TableHeader className=" w-full">
-          <TableRow className=" ">
-            <TableHead className="text-white  text-center ">Anno</TableHead>
-            <TableHead className="text-white  text-center ">Mattine</TableHead>
-            <TableHead className="text-white  text-center ">
-              Pomeriggi
-            </TableHead>
-            <TableHead className="text-white  text-center ">Notti</TableHead>
-            <TableHead className="text-white  text-center ">
-              Domeniche Mattina
-            </TableHead>
-            <TableHead className="text-white  text-center ">Azione</TableHead>
+        <TableHeader className="w-full">
+          <TableRow className="">
+            <TableHead className=" text-center ">Entrate</TableHead>
+            <TableHead className=" text-center  ">Uscite</TableHead>
+            <TableHead className="text-center  ">Totale</TableHead>
           </TableRow>
         </TableHeader>
+        { differenziale && <TableBody>
+          <TableRow className=" text-white text-center">
+            <TableCell>{differenziale?.entrate}</TableCell>
 
-        <TableBody className="overflow-hidden bg-slate-500 bg-gradient-to-t from-slate-700 rounded-sm   ">
-          {Object.entries(BlockState?.Values).map(([year, values]) => (
-            <Year
-              key={year}
-              year={year}
-              values={values}
-              Delete={() => {
-                // Create a new object without the deleted year
-                setBlockState((prev) => {
-                  const newValues = { ...prev.Values };
-                  delete newValues[year];
-                  return { ...prev, Values: newValues };
-                });
-              }}
-            />
-          ))}
+            <TableCell>{differenziale?.uscite}</TableCell>
+            <TableCell>
+              {differenziale?.entrate + differenziale?.uscite}
+            </TableCell>
+          </TableRow>{" "}
+        </TableBody>}
+      </Table>
+      <div className=" p-3">
+        <Button className="mt-4 bg-blue-500" onClick={calculateDifferenziale}>
+          Calcola Differenziale
+        </Button>
+        {Status.type === "loading" && <LoadingSpinner />}
+        {Status.type === "error" && (
+          <p className="text-red-500 mt-2">{Status.message as string}</p>
+        )}
+        {Status.type === "success" && (
+          <p className="text-green-500 mt-2">{Status.message as string}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Conteggio({ file }: BlockProps) {
+  const [Azienda, setAzienda] = useState<Azienda>();
+  const [conteggio, setConteggio] = useState<DataConteggio>({
+    Nome: file.name,
+    Values: [],
+  });
+  const [Status, setStatus] = useState<AnalysisStateInfo<DataConteggio>>({
+    type: "default",
+    message: file.name,
+  });
+
+  const analyze = async () => {
+    if (!Azienda) {
+      setStatus({
+        type: "error",
+        message: "Seleziona un'azienda prima di procedere",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setStatus({ type: "loading", message: "Analisi in corso..." });
+      const response = await axios.post(`/api/conteggio/${Azienda}`, formData);
+      setConteggio(response.data);
+      setStatus({
+        type: "success",
+        message: "Operazione completata con successo",
+      })
+
+    }catch (err: unknown) {
+        if (err instanceof AxiosError) {
+          setStatus({ type: "error", message: err.message });        }
+        
+        else{
+          throw err;
+
+        }       
+    }}
+    
+   
+  useEffect(() => {
+    if (Azienda) {
+      analyze();
+    }
+  }, [Azienda]);
+
+  const Totale = useMemo(
+    () =>
+      conteggio.Values.reduce(
+        (prev, curr) => ({
+          Mattina: prev.Mattina + curr.Mattina,
+          Notte: prev.Notte + curr.Notte,
+          Pomeriggio: prev.Pomeriggio + curr.Pomeriggio,
+          DomenicheSabatiMattina:
+            prev.DomenicheSabatiMattina + curr.DomenicheSabatiMattina,
+          Anno: 0,
+        }),
+        {
+          Mattina: 0,
+          Notte: 0,
+          Pomeriggio: 0,
+          DomenicheSabatiMattina: 0,
+          Anno: 0,
+        }
+      ),
+    [conteggio]
+  );
+
+  return (
+    <div>
+      <Table className="overflow-hidden bg-slate-800 ">
+        <TableHeader className="w-full">
           <TableRow>
-            <TableCell className="text-center">Totale:</TableCell>
-            <TableCell className="text-center">
-              Mattine: {Totale.Mattina}
-            </TableCell>
-            <TableCell className="text-center">
-              Pomeriggi: {Totale.Pomeriggio}
-            </TableCell>
-            <TableCell className="text-center">Notti: {Totale.Notte}</TableCell>
-            <TableCell className="text-center">
-              Domeniche / Sabati Mattina: {Totale.DomenicheMattina}
-            </TableCell>
-
-            <TableCell className="text-center">
-              {ConversionTable[Status.type]}
-            </TableCell>
+            <TableHead className="text-white text-center">Anno</TableHead>
+            <TableHead className="text-white text-center">Mattine</TableHead>
+            <TableHead className="text-white text-center">Pomeriggi</TableHead>
+            <TableHead className="text-white text-center">Notti</TableHead>
+            <TableHead className="text-white text-center">Domeniche</TableHead>
           </TableRow>
+        </TableHeader>
+        <TableBody className="text-slate-400">
+          {conteggio.Values.map(
+            ({ Anno, Mattina, Pomeriggio, Notte, DomenicheSabatiMattina }) => (
+              <TableRow key={Anno} className="border   marker:">
+                <TableCell className="p-2 text-center  ">{Anno}</TableCell>
+                <TableCell className="p-2 text-center">
+                  {Mattina || 0}
+                </TableCell>
+                <TableCell className="p-2 text-center">
+                  {Pomeriggio || 0}
+                </TableCell>
+                <TableCell className="p-2 text-center ">{Notte || 0}</TableCell>
+                <TableCell className="p-2 text-center">
+                  {DomenicheSabatiMattina || 0}
+                </TableCell>
+                <TableCell className="p-2 text-center">
+                  <Button
+                    onClick={() => {
+                      setConteggio((prev) => {
+                        const newValues = { ...prev.Values };
+                        delete newValues[Anno];
+                        return { ...prev, Values: newValues };
+                      });
+                    }}
+                  >
+                    Elimina
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )
+          )}
         </TableBody>
-
-        <TableFooter className="bg-slate-800 hover:text-slate-900">
-          <TableRow>
-            <TableCell>
-              <Button
-                className="bg-slate-500 bg-gradient-to-t from-slate-700"
-                onClick={analyze}
-              >
-                Richiedi il Conteggio...
-              </Button>
-            </TableCell>
-
-            <TableCell colSpan={4} className="">
-              Conteggi di timbrature (entrata e uscita) per
-              <span className="text-yellow-500 mx-1">
-                {BlockState.Nome || Block.name}
-              </span>
-            </TableCell>
-            <TableCell>
-              <Select onValueChange={(value) => setAzienda(value as Azienda)}>
-                <SelectTrigger className="w-[180px] bg-slate-500 bg-gradient-to-t from-slate-700">
-                  <SelectValue placeholder="Azienda" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-500 bg-gradient-to-t from-slate-700 text-white">
-                  <SelectItem value="Policlinico">Policlinico</SelectItem>
-                  <SelectItem value="Pisa">Pisa</SelectItem>
-                  <SelectItem value="Garibaldi">Garibaldi</SelectItem>
-                  <SelectItem value="Marche">Marche</SelectItem>
-
-                </SelectContent>
-              </Select>
+        <TableFooter>
+          <TableRow className="">
+            <TableCell className="text-center">Totale:</TableCell>
+            <TableCell className="text-center">{Totale.Mattina}</TableCell>
+            <TableCell className="text-center">{Totale.Pomeriggio}</TableCell>
+            <TableCell className="text-center">{Totale.Notte}</TableCell>
+            <TableCell className="text-center">
+              {Totale.DomenicheSabatiMattina}
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
+      <div className="p-3">
+        <div className=" my-3">
+          {Status.type === "loading" && <LoadingSpinner />}
+          {Status.type === "error" && (
+            <p className="text-red-500 mt-2">{Status.message as string}</p>
+          )}
+          {Status.type === "success" && (
+            <p className="text-green-500 mt-2">{Status.message as string}</p>
+          )}
+        </div>
+        <Select onValueChange={(value) => setAzienda(value as Azienda)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Seleziona Azienda" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Policlinico">Policlinico</SelectItem>
+            <SelectItem value="Pisa">Pisa</SelectItem>
+            <SelectItem value="Garibaldi">Garibaldi</SelectItem>
+            <SelectItem value="Marche">Marche</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }
+
+function Block({ file }: BlockProps) {
+  const [Operazione, setOperazione] = useState<"conteggio" | "differenziale">(
+    "conteggio"
+  );
+  console.log(file);
+
+  return (
+    <div className="m-3 overflow-hidden border-2 border-slate-700 shadow-lg relative">
+      {Operazione === "conteggio" ? (
+        <Conteggio file={file} />
+      ) : (
+        <Differenziale file={file} />
+      )}
+
+      <div className=" absolute right-3 bottom-3">
+        <Select
+          onValueChange={(value) =>
+            setOperazione(value as "conteggio" | "differenziale")
+          }
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Seleziona Operazione" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="conteggio">Conteggio</SelectItem>
+            <SelectItem value="differenziale">Differenziale</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+}
+
 export default Block;

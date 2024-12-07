@@ -1,8 +1,8 @@
 
-import Sidebar from "@/components/Widgets/Sidebar";
+import Sidebar from "@/components/widgets/Sidebar";
 import { Outlet } from "react-router-dom";
  
-import MyNavBar from "@/components/Widgets/MyNavBar";
+import MyNavBar from "@/components/widgets/MyNavBar";
 
 export default function Layout() {
   return (

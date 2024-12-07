@@ -1,4 +1,3 @@
-import { backend } from "@/config";
 import { range } from "@/lib/utils";
 import { CheckCheckIcon } from "lucide-react";
 
@@ -41,9 +40,7 @@ export interface CrawlState {
   content?: Blob;
   monthIndex:number;
   status: "loading" | "completed" | "error";
-}
-
-export const RequestsEndpoint = backend.path("/request");
+} 
 
 
 const FileCrawler = ({ status, crawl }: { status: CrawlState, crawl: () => void }) => {
