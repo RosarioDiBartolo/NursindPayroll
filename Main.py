@@ -1,17 +1,21 @@
+import datetime
 import io
 import traceback
-from flask import Flask, jsonify, send_file,    request
+from typing import List
+
+import pandas as pd
+from flask import Flask, jsonify, send_file, Response,   request
 from flask_cors import cross_origin
 import requests
 from WorkersAnalyzer.BPC import crawler
 from WorkersAnalyzer.BPC.crawler import crawl, mesi
-from WorkersAnalyzer.Core import PDFIterator
+from WorkersAnalyzer.Core import PDFIterator, turno
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.Extractors.UserExtractor import UserExtractor
 from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
 from WorkersAnalyzer.Extractors.MarcheExtractor import MarcheExtractor
-
+from WorkersAnalyzer.Extractors.PageExtractor import PageExtractor
 from config import app, port
 
 app = Flask(__name__)
@@ -27,7 +31,7 @@ def index():
 CrawlingSessions = dict()
 
 # Login route
-@app.route('/request/login', methods=['POST'])
+@app.route('/api/request/login', methods=['POST'])
 @cross_origin()
 def login():
     body = request.get_json()
@@ -38,7 +42,7 @@ def login():
         return jsonify(cookies), 200
     return jsonify({'message': 'Missing username or password'}), 400
 
-@app.route('/request', methods=['POST'])
+@app.route('/api/request', methods=['POST'])
 @cross_origin()
 def request_bustapaga():
     try:
@@ -77,30 +81,122 @@ extractorsTable = {
     "Marche": MarcheExtractor
 }
 
-@app.route("/aziende", methods= ["GET"])
+@app.route("/api/aziende", methods= ["GET"])
 @cross_origin()
 def Aziende():
     return jsonify(list(extractorsTable.keys())), 200
 # Process year function
-def process_year(Anno):
-    Count = Anno["Turno"].value_counts().to_dict()
-    Count["DomenicheMattina"] = len(Anno[(Anno["Turno"] == "Mattina") & ((Anno["Settimana"] == "Dom") | (Anno["Settimana"] == "Sab"))])
-    return Count
+
+
+def merge(ExtractedPages: List[PageExtractor]):
+
+    data = pd.concat( [ extractor.read().with_datetime() for  extractor in ExtractedPages] ).dropna()
+    names = {e.name for e in ExtractedPages}
+    if len(names) > 1:
+        raise Exception("Nomi diversi all'interno delle pagine...")
+    nome = names.pop()
+
+
+    data.drop(data[data["Tipo"] == "M"].index)
+
+    data["Boolean-Type"] = data["Tipo"] == "E"
+
+    data.sort_values(by='Data', ascending=True, inplace=True)
+
+    iter = data.iterrows()
+    Entrate = []
+    Uscite = []
+    for i, row in iter:
+        if not row["Boolean-Type"]:
+            continue
+
+        for i, newRow in iter:
+
+            if not newRow["Boolean-Type"]:
+                Entrate.append(row)
+                Uscite.append(newRow)
+                break
+            else:
+                row = newRow
+
+    Entrate = pd.DataFrame(Entrate).reset_index(drop=True)
+    Uscite = pd.DataFrame(Uscite).reset_index(drop=True)
+    return  Entrate, Uscite, nome
+
+def filter(Entrate, Uscite  ):
+    return Entrate[(Uscite["Data"] - Entrate["Data"]) > datetime.timedelta(hours=6)]
+def conteggio_per_anno(DfAnno: pd.DataFrame):
+    Count = DfAnno["Turno"].value_counts().to_dict()
+
+    Count["DomenicheSabatiMattina"] = len(
+        DfAnno[(DfAnno["Turno"] == "Mattina") & ((DfAnno["Settimana"] == "Dom") | (DfAnno["Settimana"] == "Sab"))])
+    Count["Anno"] = DfAnno.name
+    return  Count
+
 
 # Analyze route
-@app.route('/analyze/<extractor>', methods=['POST'])
+@app.route('/api/conteggio/<extractor>', methods=['POST'])
 @cross_origin()
-def process_files_route(extractor):
-    page_extractor = extractorsTable[extractor]
+def conteggio(extractor):
+    page_extractor: PageExtractor = extractorsTable[extractor]
     files = list(request.files.values())
     app.logger.debug("Processing files: " +  " ".join([file.name for file in files]))
     pages = [page for file in files for page in PDFIterator(file)]
+    extractedPages = [page_extractor(p) for p in pages]
+    Entrate, Uscite, nome = merge(extractedPages)
+    Filtrate = filter(Entrate, Uscite)
 
-    User = UserExtractor([page_extractor(p) for p in pages])
-    Anni = User.elaborate()
-    Values = Anni.apply(process_year).to_dict()
+    Elaborato: pd.DataFrame = Filtrate.assign(Anno=Filtrate["Data"].apply(lambda date: date.year).tolist(),
+           Turno= Filtrate["Data"].apply(lambda e: turno(  e.time() )   ).tolist())
 
-    return jsonify(Values=Values, Nome=User.name)
+    Conteggi =  Elaborato.groupby("Anno", group_keys=False).apply(conteggio_per_anno).fillna(0).to_list( )
+    print(Conteggi)
+    return  jsonify( Values = Conteggi  , Name = nome)
+
+
+turno_orario=   {
+"Mattina": 7  ,
+"Pomeriggio": 14,
+"Notte": 21,
+}
+
+# Example of conversion functions
+def time_to_timedelta(t):
+    """Convert datetime.time to datetime.timedelta since midnight."""
+    return datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+
+def differenziale_turni(df,Uscite = False):
+    # Calculate EntrateOreMinuti and EntrateUfficiali
+    dfOreMinuti = df['Data'].apply(lambda x: time_to_timedelta(x.time()))
+    Turni = df["Data"].apply(lambda e: turno(e.time()))
+    dfUfficiali = Turni.apply(lambda x: time_to_timedelta(datetime.time(hour=turno_orario[x])))
+
+    # Calculate Gaps (differences in timedelta)
+    Gaps = ( -1 if Uscite else  1  ) * (dfUfficiali - dfOreMinuti)
+
+    # Handle Anticipi: convert gaps to minutes and apply the min(5) constraint
+    Anticipi = Gaps[Gaps > datetime.timedelta(0)].dropna().apply(lambda x: min(x.total_seconds() / 60, 5))
+
+    return  Anticipi
+@app.route('/api/differenziale/<extractor>', methods=['POST'])
+@cross_origin()
+def differenziale(extractor):
+    page_extractor: PageExtractor = extractorsTable[extractor]
+    files = list(request.files.values())
+    app.logger.debug("Processing files: " + " ".join([file.name for file in files]))
+    pages = [page for file in files for page in PDFIterator(file)]
+    extractedPages = [page_extractor(p) for p in pages]
+    Entrate, Uscite, nome = merge(extractedPages)
+
+    anticipi_entrate = sum( differenziale_turni(Entrate).to_list())
+
+
+    anticipi_uscite= sum(differenziale_turni(Uscite, Uscite = True).to_list())
+
+    print( anticipi_entrate, anticipi_uscite)
+    return  jsonify( entrate = anticipi_entrate ,  uscite = anticipi_uscite , Nome = nome )
+
+
 
 # Main
 if __name__ == '__main__':
