@@ -7,6 +7,8 @@ import pandas as pd
 from flask import Flask, jsonify, send_file,   request
 from flask_cors import cross_origin
 import requests
+from pandas import Series
+
 from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
 from WorkersAnalyzer.Core import PDFIterator, turno
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
@@ -163,27 +165,39 @@ def time_to_timedelta(t):
     """Convert datetime.time to datetime.timedelta since midnight."""
     return datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
 
+
+def round_to_nearest_hour(td):
+    """Round a timedelta to the nearest hour."""
+    # Extract total minutes
+    total_minutes = td.total_seconds() / 60
+
+    # If minutes are 30 or more, round up, else round down
+    if total_minutes % 60 >= 30:
+        # Round up by adding the necessary time to get the next hour
+        return datetime.timedelta(hours=(td.seconds // 3600) + 1, minutes=0)
+    else:
+        # Round down
+        return datetime.timedelta(hours=td.seconds // 3600, minutes=0)
+
+
 def differenziale_turni(df,Uscite = False):
     # Calculate EntrateOreMinuti and EntrateUfficiali
-    dfOreMinuti = df['Data'].apply(lambda x: time_to_timedelta(x.time()))
-    Turni = df["Data"].apply(lambda e: turno(e.time()))
-    dfUfficiali = Turni.apply(lambda x: time_to_timedelta(datetime.time(hour=turno_orario[x])))
-
+    dfOreMinuti = df['Data'].dt.time.apply(time_to_timedelta)
+    dfUfficiali = dfOreMinuti.apply( round_to_nearest_hour )
     # Calculate Gaps (differences in timedelta)
     Gaps = ( -1 if Uscite else  1  ) * (dfUfficiali - dfOreMinuti)
 
     # Handle Anticipi: convert gaps to minutes and apply the min(5) constraint
-    Anticipi = Gaps[Gaps > datetime.timedelta(0)].dropna().apply(lambda x: min(x.total_seconds() / 60, 5))
+    Anticipi = Gaps[Gaps > datetime.timedelta(0) ].dropna().apply(lambda x: min(x.total_seconds() / 60, 5))
 
     return  Anticipi
-@app.route('/api/differenziale/<extractor>', methods=['POST'])
+@app.route('/api/differenziale', methods=['POST'])
 @cross_origin()
-def differenziale(extractor):
-    page_extractor: PageExtractor = extractorsTable[extractor]
+def differenziale( ):
     files = list(request.files.values())
     app.logger.debug("Processing files: " + " ".join([file.name for file in files]))
     pages = [page for file in files for page in PDFIterator(file)]
-    extractedPages = [page_extractor(p) for p in pages]
+    extractedPages = [PoliclinicoExtractor(p) for p in pages]
     Entrate, Uscite, nome = merge(extractedPages)
 
     anticipi_entrate = sum( differenziale_turni(Entrate).to_list())
