@@ -4,7 +4,7 @@ import traceback
 from typing import List
 
 import pandas as pd
-from flask import Flask, jsonify, send_file, Response,   request
+from flask import Flask, jsonify, send_file,   request
 from flask_cors import cross_origin
 import requests
 from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
@@ -149,7 +149,7 @@ def conteggio(extractor):
 
     Conteggi =  Elaborato.groupby("Anno", group_keys=False).apply(conteggio_per_anno).fillna(0).to_list( )
     print(Conteggi)
-    return  jsonify( Values = Conteggi  , Name = nome)
+    return  jsonify( Values = Conteggi  , Nome = nome)
 
 
 turno_orario=   {
