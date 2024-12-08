@@ -112,8 +112,7 @@ function Conteggio({ file }: BlockProps) {
  
 
   const [aziendeDisponibiliInfo, fetchAziendeDisponibili] = useAxios( [], async ()=>{
-    const aziende = await ( await apiClient.get<string[]>("/api/aziende") ).data 
-    return aziende
+     return await ( await apiClient.get<string[]>("/api/aziende") ).data 
   }, []  )
  
   useEffect(() => { 
@@ -252,6 +251,10 @@ function Conteggio({ file }: BlockProps) {
               aziendeDisponibiliInfo.data.map((a)=>(
                 <SelectItem key={a} value={a}>{a}</SelectItem>
               ))
+            }
+            {
+              aziendeDisponibiliInfo.data.length > 0 && <SelectItem value={"Pisa"}>Lucca </SelectItem>
+ 
             }
              
           </SelectContent>
