@@ -56,7 +56,7 @@ function Differenziale({ file }: BlockProps) {
     const formData = new FormData();
     formData.append("file", file);
      
-     const res =  await apiClient.post(`/api/differenziale/Policlinico`, formData, {  })
+     const res =  await apiClient.post(`/api/differenziale`, formData, {  })
       return  await res.data
       
   };
