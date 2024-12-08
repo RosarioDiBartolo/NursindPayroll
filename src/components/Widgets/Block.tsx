@@ -17,8 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import   { AxiosError } from "axios";
-import apiClient from "@/lib/utils";
+import apiClient, { useAxios } from "@/lib/utils";
+import { IoReload } from "react-icons/io5";
 
 type YearData = {
   DomenicheSabatiMattina: number;
@@ -49,39 +49,28 @@ type DataDifferenziale = {
   entrate: number;
   uscite: number;
 };
-interface AnalysisStateInfo<T>{
-  message: T| string;
-  type: "loading" | "default" | "success" | "error";
-}
+ 
 function Differenziale({ file }: BlockProps) {
-  const [Status, setStatus] = useState<AnalysisStateInfo<DataDifferenziale>>({
-    type: "default",
-    message: "Pronto a calcolare il differenziale",
-  });
-  const [differenziale, setDifferenziale] = useState<DataDifferenziale | null>(
-    null
-  );
 
-  const calculateDifferenziale = () => {
+  const calculateDifferenziale = async () => {
     const formData = new FormData();
     formData.append("file", file);
-
-    setStatus({ type: "loading", message: "Calcolo in corso..." });
-
-    apiClient
-      .post(`/api/differenziale/Policlinico`, formData)
-      .then((response) => {
-        setDifferenziale(response.data);
-        setStatus({ type: "success", message: "Calcolo completato" });
-      })
-      .catch((error) => {
-        setStatus({ type: "error", message: `Errore: ${error.message}` });
-      });
+     
+     const res =  await apiClient.post(`/api/differenziale/Policlinico`, formData, {  })
+      return  await res.data
+      
   };
+ 
+  const [InfoDifferenziale, riCalcolaDifferenziale] = useAxios<DataDifferenziale | null>(
+    null, calculateDifferenziale, []
+  );
+
+  const differenziale = InfoDifferenziale.data
 
   return (
     <div className=" text-white">
-      <h2 className=" bg-slate-800 p-1 px-3">{differenziale?.Nome}</h2>
+      
+      <h3 className=" bg-slate-800 p-1 px-3">{differenziale?.Nome}</h3>
       <Table className="overflow-hidden bg-slate-800 ">
         <TableHeader className="w-full">
           <TableRow className="">
@@ -90,7 +79,7 @@ function Differenziale({ file }: BlockProps) {
             <TableHead className="text-center  ">Totale</TableHead>
           </TableRow>
         </TableHeader>
-        { differenziale && <TableBody>
+        { InfoDifferenziale.state === "success" && differenziale && <TableBody>
           <TableRow className=" text-white text-center">
             <TableCell>{differenziale?.entrate}</TableCell>
 
@@ -102,82 +91,59 @@ function Differenziale({ file }: BlockProps) {
         </TableBody>}
       </Table>
       <div className=" p-3">
-        <Button className="mt-4 bg-blue-500" onClick={calculateDifferenziale}>
+        
+      {InfoDifferenziale.state === "loading" && <LoadingSpinner className=" text-slate-900" />}
+      {InfoDifferenziale.state === "error" && (
+          <p className="text-red-500 mt-2">{ InfoDifferenziale.error as string}</p>
+        )}
+        {InfoDifferenziale.state === "success" && (
+          <p className="text-green-500 mt-2">Calcolo Completato</p>
+        )}
+        <Button className="mt-4 bg-blue-500" onClick={riCalcolaDifferenziale}>
           Calcola Differenziale
         </Button>
-        {Status.type === "loading" && <LoadingSpinner />}
-        {Status.type === "error" && (
-          <p className="text-red-500 mt-2">{Status.message as string}</p>
-        )}
-        {Status.type === "success" && (
-          <p className="text-green-500 mt-2">{Status.message as string}</p>
-        )}
+         
       </div>
     </div>
   );
 }
 
 function Conteggio({ file }: BlockProps) {
-  const [aziendeDisponibili, setAziendeDisponibili ]  = useState<string[]>([])
-  useEffect(()=>{
-    const fetchAziende = async ()=>{
-      setAziendeDisponibili( (await apiClient.get("/api/aziende")).data )
+ 
 
-    }
-
-    fetchAziende
-   },[])
+  const [aziendeDisponibiliInfo, fetchAziendeDisponibili] = useAxios( [], async ()=>{
+    const aziende = await ( await apiClient.get<string[]>("/api/aziende") ).data 
+    return aziende
+  }, []  )
+ 
+  useEffect(() => { 
+    fetchAziendeDisponibili();
+ }, [fetchAziendeDisponibili]);
+ 
   const [Azienda, setAzienda] = useState<string>();
-  const [conteggio, setConteggio] = useState<DataConteggio>({
+
+  const [Infoconteggio, fetchConteggio, setConteggio ] = useAxios<DataConteggio>( {
     Nome: file.name,
     Values: [],
-  });
-  const [Status, setStatus] = useState<AnalysisStateInfo<DataConteggio>>({
-    type: "default",
-    message: file.name,
-  });
-
-  const analyze = async () => {
-    if (!Azienda) {
-      setStatus({
-        type: "error",
-        message: "Seleziona un'azienda prima di procedere",
-      });
-      return;
-    }
-
+  }, async ()=>{
+   if (! Azienda){
+    throw "Seleziona un'azienda prima di procedere"
+   }
     const formData = new FormData();
     formData.append("file", file);
-
-    try {
-      setStatus({ type: "loading", message: "Analisi in corso..." });
-      const response = await apiClient.post(`/api/conteggio/${Azienda}`, formData);
-      setConteggio(response.data);
-      setStatus({
-        type: "success",
-        message: "Operazione completata con successo",
-      })
-
-    }catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          setStatus({ type: "error", message: err.message });        }
-        
-        else{
-          throw err;
-
-        }       
-    }}
+    const response = (await apiClient.post<DataConteggio>(`/api/conteggio/${Azienda}`, formData)).data;
+    return response
     
-   
-  useEffect(() => {
-    if (Azienda) {
-      analyze();
-    }
-  }, [Azienda]);
+  }, [Azienda, file.name]  ) 
+  
 
+  useEffect(()=>{
+    if(Azienda){
+      fetchConteggio()
+    }
+  }, [Azienda])
   const Totale = useMemo(
-    () =>
-      conteggio.Values.reduce(
+    () => Infoconteggio.data.Values.reduce(
         (prev, curr) => ({
           Mattina: prev.Mattina + curr.Mattina,
           Notte: prev.Notte + curr.Notte,
@@ -193,12 +159,14 @@ function Conteggio({ file }: BlockProps) {
           DomenicheSabatiMattina: 0,
           Anno: 0,
         }
-      ),
-    [conteggio]
+      )  ,
+    [Infoconteggio.data]
   );
 
   return (
     <div>
+    <h3 className=" bg-slate-800 p-1 px-3 text-white">{ Infoconteggio.state === "success" && Infoconteggio.data?.Nome}</h3>
+
       <Table className="overflow-hidden bg-slate-800 ">
         <TableHeader className="w-full">
           <TableRow>
@@ -210,7 +178,7 @@ function Conteggio({ file }: BlockProps) {
           </TableRow>
         </TableHeader>
         <TableBody className="text-slate-400">
-          {conteggio.Values.map(
+          {Infoconteggio.state === "success" && (Infoconteggio.data as DataConteggio).Values.map(
             ({ Anno, Mattina, Pomeriggio, Notte, DomenicheSabatiMattina }) => (
               <TableRow key={Anno} className="border   marker:">
                 <TableCell className="p-2 text-center  ">{Anno}</TableCell>
@@ -228,10 +196,15 @@ function Conteggio({ file }: BlockProps) {
                   <Button
                     onClick={() => {
                       setConteggio((prev) => {
-                        const newValues = { ...prev.Values };
-                        delete newValues[Anno];
-                        return { ...prev, Values: newValues };
+                        if (!prev || !Array.isArray(prev.Values)) return prev;
+                        return {
+                          ...prev,
+                           
+                            Values: prev.Values.filter((value) => value.Anno !== Anno),
+                          
+                        };
                       });
+
                     }}
                   >
                     Elimina
@@ -255,23 +228,29 @@ function Conteggio({ file }: BlockProps) {
       </Table>
       <div className="p-3">
         <div className=" my-3">
-          {Status.type === "loading" && <LoadingSpinner />}
-          {Status.type === "error" && (
-            <p className="text-red-500 mt-2">{Status.message as string}</p>
+          {Infoconteggio.state==="loading" && <LoadingSpinner />}
+          {Infoconteggio.state === "error" && (
+            <p className="text-red-500 mt-2">{Infoconteggio.error as string}</p>
           )}
-          {Status.type === "success" && (
-            <p className="text-green-500 mt-2">{Status.message as string}</p>
+          {Infoconteggio.state === "success"  && (
+            <p className="text-green-500 mt-2"> Conteggio avvenuto con successo </p>
           )}
         </div>
         <Select onValueChange={(value) => setAzienda(value  )}>
+          <div className=" flex gap-3"> 
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Seleziona Azienda" />
           </SelectTrigger>
+          <button onClick={ ()=>{
+            fetchConteggio()
+          }} className= " hover:bg-gray-200 p-3  rounded-lg ">
+            <IoReload />
+          </button>
+          </div>
           <SelectContent>
             {
-              aziendeDisponibili.map((a)=>(
+              aziendeDisponibiliInfo.data.map((a)=>(
                 <SelectItem key={a} value={a}>{a}</SelectItem>
-
               ))
             }
              
@@ -286,10 +265,11 @@ function Block({ file }: BlockProps) {
   const [Operazione, setOperazione] = useState<"conteggio" | "differenziale">(
     "conteggio"
   );
-  console.log(file);
-
+ 
   return (
-    <div className="m-3 overflow-hidden border-2 border-slate-700 shadow-lg relative">
+    <div className="m-3 overflow-hidden border  hover:border-slate-700 shadow-xl relative">
+    <h2 className=" bg-slate-800 text-white p-1 px-3">{file?.name}</h2>
+
       {Operazione === "conteggio" ? (
         <Conteggio file={file} />
       ) : (
@@ -298,6 +278,7 @@ function Block({ file }: BlockProps) {
 
       <div className=" absolute right-3 bottom-3">
         <Select
+          defaultValue="conteggio"
           onValueChange={(value) =>
             setOperazione(value as "conteggio" | "differenziale")
           }

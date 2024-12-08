@@ -8,8 +8,7 @@ function Tasks() {
     
   const [files, setFiles] = useFiles()
 
-  console.log(files)
-  return (
+   return (
     <div className="flex flex-col  ">
       {files.length  > 0 ? (
         files.map((block, idx) => <Block key={idx} file={block} />)

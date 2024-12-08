@@ -35,8 +35,7 @@ for (let year = start_year; year <= currentYear; year++) {
 
   Mesi = [...Mesi, ...Packed];
 }
-console.log(Mesi)
-export interface CrawlState {
+ export interface CrawlState {
   content?: Blob;
   monthIndex:number;
   status: "loading" | "completed" | "error";

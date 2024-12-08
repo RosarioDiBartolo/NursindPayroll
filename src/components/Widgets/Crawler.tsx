@@ -101,16 +101,14 @@ const Crawler = () => {
         // Convert Blob to ArrayBuffer synchronously
         // Create Blob object from ArrayBuffer
         const blob = crawlState.content;
-        console.log(blob);
-        // Add file to ZIP
+         // Add file to ZIP
         zip.file(`${year}-${month + 1}.pdf`, blob);
       }
     });
 
     // Generate ZIP file
     zip.generateAsync({ type: "blob" }).then((blob) => {
-      console.log(blob);
-      // Save ZIP file
+       // Save ZIP file
       saveAs(blob, "crawled_files.zip");
     });
   };
