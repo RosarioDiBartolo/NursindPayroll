@@ -1,6 +1,6 @@
 from Core import PDFIterator
 
-file = "Tests/Marche/PDFS/CARTELLINO_2021_6_FCCMHL85H12H769C.pdf"
+file = "C:\\Users\\Rosario\\Downloads\\2013 PARZ.pdf"
 
 pages = list(PDFIterator(file))
 
