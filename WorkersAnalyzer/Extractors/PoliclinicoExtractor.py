@@ -6,6 +6,8 @@ from .PageExtractor import PageExtractor, w_days
 class PoliclinicoExtractor (PageExtractor):
     PatternData = re.compile(r'(lu|ma|me|gi|ve|sa|do)(\s|\*)(\d\d)')
     PatternTimbrature = re.compile(r"(E|U|u|e)(\d\d\d\d)")
+    PatternOrariLavorativi = re.compile(r"(\d\d\.\d\d)")
+
     PatternName = re.compile(r"BADGE:\d+(.*)")
     WeekTable = dict(zip(["lu", "ma", "me", "gi", "ve", "sa", "do"], w_days))
     def read(self):
@@ -34,7 +36,8 @@ class PoliclinicoExtractor (PageExtractor):
     @staticmethod
     def extract_row(row):
         Timbrature = PoliclinicoExtractor.PatternTimbrature.findall(row)
-
+        OrariLavorativi = PoliclinicoExtractor.PatternOrariLavorativi.findall(row)[0: len(Timbrature)]
+        print(len(Timbrature), len(OrariLavorativi))
         match = PoliclinicoExtractor.PatternData.search(row)
         if match:
             wday, day = match.group().replace("*", " ").split()
@@ -43,8 +46,8 @@ class PoliclinicoExtractor (PageExtractor):
             return []
 
         #print("Day:", day,"Wday:",  wday,"Row:", row, "Orario:" ,Timbrature)
-        return [(tipo.upper(), day, int(orario[0:2]), int(orario[2:4]), wday) for (tipo, orario) in
-               Timbrature] if Timbrature else [(None, day, 0, 0, wday)]
+        return [(tipo.upper(), day, int(orario[0:2]), int(orario[2:4]),  orarioLavorativo.replace(".", ":"), wday) for ((tipo, orario), orarioLavorativo) in
+               zip(Timbrature, OrariLavorativi)] if Timbrature else [(None, day, 0, 0, wday)]
 
 if __name__ == '__main__':
     from ..EasyTest.PoliclinicoUtils import SamplePages

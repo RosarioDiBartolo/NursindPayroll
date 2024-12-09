@@ -7,7 +7,7 @@ import pandas as pd
 WeekDays = ["lu", "ma", "me", "gi", "ve", "sa", "do"]
 
 
-PageColumns =  ["Tipo", "Giorno", "Ore", "Minuti", "Settimana"]
+PageColumns =  ["Tipo", "Giorno", "Ore", "Minuti", "OrariLavorativi","Settimana"]
 class PageData:
 
 

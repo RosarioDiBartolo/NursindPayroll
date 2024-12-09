@@ -216,7 +216,7 @@ def parse(extractor, what):
         print("Parsing")
         print(df)
         # Filter by 'Tipo' if 'what' is provided
-        if what:
+        if what != "full":
             tipo = "E" if what.lower() == "entrate" else "U"
             df = df[df["Tipo"] == tipo]
 
