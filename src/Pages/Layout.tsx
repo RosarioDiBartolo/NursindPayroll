@@ -16,7 +16,7 @@ export default function Layout() {
       <h1 className="m-6 text-lg ">
         <strong className={ "elipsis disappear"}>Operazioni in corso</strong> 
       </h1>
-      <div className="w-full p-6 ">
+      <div className="w-full p-6  bg-zinc-300 ">
       <Outlet />
 
       </div>

@@ -8,11 +8,11 @@ export function cn(...inputs: ClassValue[]) {
 }
  
 const isDevelopment = import.meta.env.MODE === 'development';
-
+export const baseURL =  isDevelopment
+? 'http://127.0.0.1:8080' // Proxy handles this in development
+: 'https://nursindbackend.onrender.com' // Direct URL in production
 const apiClient = axios.create({
-  baseURL: isDevelopment
-    ? 'http://127.0.0.1:8080' // Proxy handles this in development
-    : 'https://nursindbackend.onrender.com', // Direct URL in production
+  baseURL  
 });
 
 export default apiClient;
