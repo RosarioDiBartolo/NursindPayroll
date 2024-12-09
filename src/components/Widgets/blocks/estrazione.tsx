@@ -6,12 +6,12 @@ import { BsFiletypeCsv } from "react-icons/bs";
 
 function Estrazione({ file, Azienda }: OperationsProps) {
  
-  const download = async ( what?:string ) => {
+  const download = async ( what :string ) => {
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await apiClient.post(`/api/parse/${Azienda}${what &&  `/${what}`  }`, formData, {
+      const response = await apiClient.post(`/api/parse/${Azienda}/${what}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -42,7 +42,7 @@ function Estrazione({ file, Azienda }: OperationsProps) {
                 <Tooltip.TooltipTrigger className=" text-center" asChild>
                   <div className=" text-black">
                     <button
-                      onClick={ ()=> download()}
+                      onClick={ ()=> download("full")}
                       className=" hover:bg-gray-200 p-3  rounded-lg "
                     >
                       <BsFiletypeCsv className="  " />
