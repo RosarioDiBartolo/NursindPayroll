@@ -4,10 +4,10 @@ import traceback
 from typing import List
 
 import pandas as pd
-from flask import Flask, jsonify, send_file,   request
+from flask import Flask, jsonify, send_file,   request, Response
 from flask_cors import cross_origin
 import requests
-from pandas import Series
+import io
 
 from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
 from WorkersAnalyzer.Core import PDFIterator, turno
@@ -134,6 +134,7 @@ def conteggio_per_anno(DfAnno: pd.DataFrame):
     return  Count
 
 
+
 # Analyze route
 @app.route('/api/conteggio/<extractor>', methods=['POST'])
 @cross_origin()
@@ -191,6 +192,49 @@ def differenziale_turni(df,Uscite = False):
     Anticipi = Gaps[Gaps > datetime.timedelta(0) ].dropna().apply(lambda x: min(x.total_seconds() / 60, 5))
 
     return  Anticipi
+
+@app.route('/api/parse/<extractor>/<what>', methods=['POST'])
+@cross_origin()
+def parse(extractor, what):
+    try:
+        # Validate extractor
+        if extractor not in extractorsTable:
+            return jsonify({"error": "Invalid extractor"}), 400
+
+        page_extractor: PageExtractor = extractorsTable[extractor]
+
+        # Ensure files are provided
+        files = list(request.files.values())
+        if not files:
+            return jsonify({"error": "No files provided"}), 400
+
+        app.logger.debug("Processing files: " + " ".join([file.name for file in files]))
+
+        # Process PDF pages
+        pages = [page for file in files for page in PDFIterator(file)]
+        df = pd.concat([page_extractor(p).read().with_datetime()  for p in pages])
+        print("Parsing")
+        print(df)
+        # Filter by 'Tipo' if 'what' is provided
+        if what:
+            tipo = "E" if what.lower() == "entrate" else "U"
+            df = df[df["Tipo"] == tipo]
+
+        # Convert to CSV
+        output = io.StringIO()
+        df.to_csv(output, index=False)
+        output.seek(0)
+
+        # Return response
+        response = Response(output, mimetype='text/csv')
+        response.headers['Content-Disposition'] = 'attachment; filename=data.csv'
+        return response
+
+    except Exception as e:
+        app.logger.error(f"Error processing files: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/api/differenziale', methods=['POST'])
 @cross_origin()
 def differenziale( ):
