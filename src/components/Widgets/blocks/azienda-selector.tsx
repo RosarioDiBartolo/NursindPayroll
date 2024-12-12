@@ -27,7 +27,7 @@ function AziendaSelector({
  }: ReturnType<typeof useAzienda>) {
   const { aziendeDisponibili } = useContext(taskContext);
   return (
-    <Select onValueChange={(value) => setAzienda(value)}>
+    <Select onValueChange={(value) => setAzienda(value === "Lucca"? "Pisa": value)}>
          <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Seleziona Azienda" />
         </SelectTrigger>
@@ -39,7 +39,7 @@ function AziendaSelector({
           </SelectItem>
         ))}
         {aziendeDisponibili.length > 0 && (
-          <SelectItem value={"Pisa"}>Lucca </SelectItem>
+          <SelectItem value={"Lucca"}>Lucca </SelectItem>
         )}
       </SelectContent>
     </Select>
