@@ -1,56 +1,69 @@
+import datetime
 import re
+from typing import Generator, List, Tuple
 
-from .PageExtractor import PageExtractor, w_days
-
-
-class PoliclinicoExtractor (PageExtractor):
-    PatternData = re.compile(r'(lu|ma|me|gi|ve|sa|do)(\s|\*)(\d\d)')
-    PatternTimbrature = re.compile(r"(E|U|u|e)(\d\d\d\d)")
-    PatternOrariLavorativi = re.compile(r"(\d\d\.\d\d)")
-
-    PatternName = re.compile(r"BADGE:\d+(.*)")
-    WeekTable = dict(zip(["lu", "ma", "me", "gi", "ve", "sa", "do"], w_days))
-    def read(self):
-        pageData = super(PoliclinicoExtractor, self).read()
-        pageData.data["Settimana"] = pageData.data["Settimana"].apply(lambda x :  PoliclinicoExtractor.WeekTable[x])
-        return pageData
-    def extract(self ):
-        InterestedPages = self.content( )
-
-        return [ timbratura for row in InterestedPages for timbratura in
-         PoliclinicoExtractor.extract_row(row) ]
+from .PageExtractor import PageExtractor, RowExtract
 
 
-    def extract_name(self):
-        return PoliclinicoExtractor.PatternName.search(self.page[2]).group(1).strip()
-    def content(self):
+class PoliclinicoExtractor(PageExtractor):
+    # Regex patterns
+    PATTERN_DATA = re.compile(r'(lu|ma|me|gi|ve|sa|do)(\s|\*)(\d\d)')
+    PATTERN_TIMBRATURE = re.compile(r"(E|U|u|e)(\d\d\d\d)")
+    PATTERN_ORARI_LAVORATIVI = re.compile(r"(\d\d\.\d\d)")
+    PATTERN_NAME = re.compile(r"BADGE:\d+(.*)")
 
-         for row in self.page[7:]:
+
+    def extract_name(self) -> str:
+        """Extract the name associated with the badge."""
+        match = PoliclinicoExtractor.PATTERN_NAME.search(self.page[2])
+        if not match:
+            raise ValueError("Name not found in the content.")
+        return match.group(1).strip()
+
+    def _get_content(self) -> Generator[str, None, None]:
+        """
+        Yield non-numeric rows of the page content, starting from the 8th row.
+        Rows containing '*' are replaced with spaces.
+        """
+        for row in self.page[7:]:
             try:
-                float(row)
-                return
-
+                float(row)  # Skip rows that can be converted to float
             except ValueError:
                 yield row.replace("*", " ")
 
-    @staticmethod
-    def extract_row(row):
-        Timbrature = PoliclinicoExtractor.PatternTimbrature.findall(row)
-        OrariLavorativi = PoliclinicoExtractor.PatternOrariLavorativi.findall(row)[0: len(Timbrature)]
-        print(len(Timbrature), len(OrariLavorativi))
-        match = PoliclinicoExtractor.PatternData.search(row)
-        if match:
-            wday, day = match.group().replace("*", " ").split()
-            day = int(day)
-        else:
+
+    def _extract_row (self ,row: str ) -> List[tuple[str, datetime, datetime.timedelta]] :
+        """
+        Extract timbrature, orari lavorativi, and date information from a row.
+        Returns a list of tuples containing:
+        - Type of timbrature ('E' or 'U')
+        - Date and time as a datetime object
+        - Working hours as a timedelta
+        """
+        timbrature = PoliclinicoExtractor.PATTERN_TIMBRATURE.findall(row)
+        orari_lavorativi = PoliclinicoExtractor.PATTERN_ORARI_LAVORATIVI.findall(row)[:len(timbrature)]
+
+        date_match = PoliclinicoExtractor.PATTERN_DATA.search(row)
+        if not date_match or not timbrature:
             return []
 
-        #print("Day:", day,"Wday:",  wday,"Row:", row, "Orario:" ,Timbrature)
-        return [(tipo.upper(), day, int(orario[0:2]), int(orario[2:4]),  orarioLavorativo.replace(".", ":"), wday) for ((tipo, orario), orarioLavorativo) in
-               zip(Timbrature, OrariLavorativi)] if Timbrature else [(None, day, 0, 0, wday)]
+        # Extract weekday and day
+        wday, day = date_match.group().replace("*", " ").split()
+        day = int(day)
 
-if __name__ == '__main__':
-    from ..EasyTest.PoliclinicoUtils import SamplePages
+        try:
+            return [
+                 RowExtract(
+                        extractor= self,
+                        tipo = tipo.upper(),
+                        giorno=day,
+                        ora = int(orario[0:2]),
+                        minuto= int(orario[2:]),
 
-    e = PoliclinicoExtractor(SamplePages[0])
-
+                        ora_orario_lavorativo =  orario_lavorativo[0:2],
+                        minuto_orario_lavorativo=orario_lavorativo[3:]
+                )
+                for (tipo, orario), orario_lavorativo in zip(timbrature, orari_lavorativi)
+            ]
+        except Exception as e:
+            raise ValueError(f"Error processing row: {row}. Details: {e}") from e

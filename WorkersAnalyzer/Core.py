@@ -1,9 +1,8 @@
-import os
-#from tkinter import filedialog
+import datetime
 
 import PyPDF2
 import numpy as np
-from PyPDF2 import PdfReader
+import pandas as pd
 
 
 Orari_Entrate = np.array([7, 14, 21])
@@ -13,43 +12,12 @@ Orario_turno = {
 14: "Pomeriggio",
 21: "Notte",
 }
-def turno(entrata):
-    indice_piu_vicino = np.argmin(np.abs(Orari_Entrate - entrata.hour))
+
+def turno(hour):
+
+    indice_piu_vicino = np.argmin(np.abs(Orari_Entrate - hour))
     numero_piu_vicino = Orari_Entrate[indice_piu_vicino]
-    return Orario_turno[numero_piu_vicino]
-class Directory:
-
-    def __init__(self, dir):
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-
-        self.directory = dir
-    def __repr__(self):
-        return f"path: {self.directory}"
-    def to(self, file):
-        return os.path.join(self.directory, file)
-
-    @staticmethod
-    def return_dir(method):
-        def wrapper(*args, **kwargs):
-            directory = method(*args, **kwargs)
-            return Directory(directory)
-
-        return wrapper
-    @return_dir
-    def path(self, *paths) :
-        return os.path.join(self.directory, *paths)
-
-
-
-    """@staticmethod
-    def from_explorer():
-        dir = filedialog.askdirectory(initialdir="./",
-                                            title="Select a Directory",)
-        return Directory(dir)"""
-
-def basename(file):
-    return file.split('.')[0]
+    return  Orario_turno[numero_piu_vicino]
 
 def PDFIterator(file):
     pages = PyPDF2.PdfReader(file).pages
@@ -61,33 +29,39 @@ def PDFIterator(file):
 
         yield text.split("\n")
 
-script = Directory(os.path.dirname(os.path.abspath(__file__)))
-tests = script.path("./Tests")
-def test_sample(Azienda ):
-    DirectoryEsempi: Directory = tests.path( Azienda )
+def differenziale(df: pd.DataFrame):
+    required_columns = {"Tipo", "Orari lavorativi", "Data"}
+    if not required_columns.issubset(df.columns):
+        raise ValueError(f"Il DataFrame deve contenere le colonne: {required_columns}")
 
+    if not pd.api.types.is_datetime64_any_dtype(df["Data"]):
+        df["Data"] = pd.to_datetime(df["Data"])
 
-    RawTextPath = os.path.join(DirectoryEsempi.directory, "RawText")
-    if not os.path.exists(RawTextPath):
-        PDFS = DirectoryEsempi.path("PDFS")
+    if len(df) > 0:
+        if df["Tipo"].iloc[0] == "U":
+            df = df.drop(index=0).reset_index(drop=True)
+        if df["Tipo"].iloc[-1] == "E":
+            df = df.drop(index=df.index[-1]).reset_index(drop=True)
 
-        files = os.listdir( PDFS.directory )
+    index = df.index // 2
 
-        sample = files[0]
-        print(sample)
-        path = PDFS.to(sample)
-        print( path )
-        content = "\nPAGE\n".join(  list(map( lambda p: p.extract_text(),  PdfReader( path ).pages  )) )
-        RawText = Directory(RawTextPath)
+    grouped = pd.DataFrame({
+        'Orari lavorativi': df["Orari lavorativi"].groupby(index).sum().reset_index(drop=True),
+        'Data entrata': df[df["Tipo"] == "E"]['Data'].reset_index(drop=True),
+        'Data uscita': df[df["Tipo"] == "U"]['Data'].reset_index(drop=True)
+    })
 
-        with open(RawText.to( f"{basename(files[0])}.text"), "w") as cache:
-            cache.write(content)
-    else:
-        RawText = Directory(RawTextPath)
-        files = os.listdir( RawTextPath )
-        sample = f"{basename(files[0]) }.text"
-        with open( RawText.to(sample), "r") as inp:
-            content = inp.read()
+    grouped["Data ideale entrata"] = grouped["Data entrata"].dt.round('h')
+    grouped["Data ideale uscita"] = grouped["Data ideale entrata"] + pd.to_timedelta(grouped["Orari lavorativi"], unit='h')
+    grouped["Differenza uscita"] = grouped["Data uscita"] - grouped["Data ideale uscita"]
 
-    Pages = content.split("\nPAGE\n")
-    return [ p.split("\n") for p in Pages ]
+    grouped["Differenza entrata"] = grouped["Data ideale entrata"] - grouped["Data entrata"]
+
+    MinutiDifferenzeUscita = grouped["Differenza uscita"].dt.total_seconds() / 60
+    MinutiDifferenzeEntrata = grouped["Differenza entrata"].dt.total_seconds() / 60
+
+    MinutiTagliatiUscita = np.maximum(np.minimum(MinutiDifferenzeUscita, 5), 0)
+
+    MinutiTagliatiEntrata = np.maximum(np.minimum(MinutiDifferenzeEntrata, 5), 0)
+
+    return    MinutiTagliatiEntrata, MinutiTagliatiUscita

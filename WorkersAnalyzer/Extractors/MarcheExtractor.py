@@ -1,7 +1,10 @@
 import re
+from datetime import time, datetime, timedelta
 
 from ..ExctractingError import ExtractingError
-from .PageExtractor import PageExtractor, w_days
+from .PageExtractor import PageExtractor, w_days, RowExtract
+
+
 class MarcheExtractor(PageExtractor):
     Azienda = "Marche"
 
@@ -13,18 +16,16 @@ class MarcheExtractor(PageExtractor):
     DatePattern = re.compile(r'\d{2}/\d{4}')
     NamePattern = re.compile(r"(\w+)\sCognome\s([\w\s]+)\sNome")
 
-    @staticmethod
-    def extract_from_row(row):
+    def _extract_row (self ,row: str ) -> list[tuple[str, datetime, timedelta]] :
         EntrateUscite = MarcheExtractor.PatternEntrateUscite.findall(row)
         match = MarcheExtractor.PatternData.search(row)
-        if match:
-            day, wday = match.group().split()
-            day = int(day)
+        if match and EntrateUscite:
+            giorno = int(match.group().split()[0])
         else:
             return []
 
-        return [(tipo, day, int(orario[0:2]), int(orario[3:]), wday) for (tipo, orario) in
-                EntrateUscite] if EntrateUscite else [(None, day, 0, 0, wday)]
+        return [ RowExtract (  self,  tipo= tipo, giorno=giorno, ora= orario[:2], minuto=orario[3:]  ) for (tipo, orario) in
+                EntrateUscite]
 
     def extract_name(self):
         # The assumption is that the name is in the format "SURNAME Cognome FIRSTNAME Nome"
@@ -43,7 +44,7 @@ class MarcheExtractor(PageExtractor):
             else:
                 raise ExtractingError(f"Name extraction failed on text: {text}", "name")
 
-    def content(self):
+    def _get_content(self):
 
         for row in self.page[13:]:
             if MarcheExtractor.contentEndPattern in row:
@@ -58,13 +59,8 @@ class MarcheExtractor(PageExtractor):
         pageData.data["Settimana"] = pageData.data["Settimana"].apply(lambda x :  MarcheExtractor.WeekTable[x])
         return pageData
 
-    def extract(self):
-        interested = self.content()
-
-        return [timbratura for row in interested for timbratura in MarcheExtractor.extract_from_row(row)  if row]
     def search_month_year(self):
         row: list[str] = self.page[1].split()
-
 
         month, year = PageExtractor.mesi.index( row[-2].lower() )  + 1, int(row[-1])
         return month  , year

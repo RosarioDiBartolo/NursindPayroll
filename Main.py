@@ -1,31 +1,27 @@
 import datetime
-import io
 import traceback
-from typing import List
-
 import pandas as pd
 from flask import Flask, jsonify, send_file,   request, Response
-from flask_cors import cross_origin
+from flask_cors import cross_origin, CORS
 import requests
 import io
 
 from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
 from WorkersAnalyzer.Core import PDFIterator, turno
+import  WorkersAnalyzer.Core as Core
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
 from WorkersAnalyzer.Extractors.MarcheExtractor import MarcheExtractor
-from WorkersAnalyzer.Extractors.PageExtractor import PageExtractor
+from WorkersAnalyzer.Extractors.PageExtractor import PageExtractor, w_days
 from config import app, port
 
 app = Flask(__name__)
-
+CORS(app)
 # Routes
 @app.route("/")
 def index():
     return "Server running"
-
-
 
 # Session Storage
 CrawlingSessions = dict()
@@ -88,43 +84,40 @@ def Aziende():
 # Process year function
 
 
-def merge(ExtractedPages: List[PageExtractor]):
-
-    data = pd.concat( [ extractor.read().with_datetime() for  extractor in ExtractedPages] ).dropna()
-    names = {e.name for e in ExtractedPages}
+def merge(extractors: list[PageExtractor]):
+    names = {e.name for e in extractors}
+    #ALl extractors must have the same name, or the pages are incoherent
     if len(names) > 1:
         raise Exception("Nomi diversi all'interno delle pagine...")
     nome = names.pop()
+    pages = pd.concat([ e.data for e in extractors])
+
+    pages.drop(pages[pages["Tipo"] == "M"].index)
+
+    pages.sort_values(by='Data', ascending=True, inplace=True)
 
 
-    data.drop(data[data["Tipo"] == "M"].index)
+    if len(pages) > 0:
+        if pages["Tipo"].iloc[0] == "U":
+            pages = pages.drop(index=0).reset_index(drop=True)
+        if pages["Tipo"].iloc[-1] == "E":
+            pages = pages.drop(index=pages.index[-1]).reset_index(drop=True)
 
-    data["Boolean-Type"] = data["Tipo"] == "E"
 
-    data.sort_values(by='Data', ascending=True, inplace=True)
+    merged = pd.DataFrame()
+    Entrate = pages[pages["Tipo"] == "E"].reset_index(drop=True)
 
-    iter = data.iterrows()
-    Entrate = []
-    Uscite = []
-    for i, row in iter:
-        if not row["Boolean-Type"]:
-            continue
+    Uscite = pages[pages["Tipo"] == "U"].reset_index(drop=True)
+    merged["Entrate"] = Entrate["Data"]
+    merged["Uscite"] = Uscite["Data"]
+    merged["Differenze"]  =  merged["Uscite"] - merged["Entrate"]
+    merged["Orario lavorativo"] = Entrate["Orario lavorativo"] + Uscite["Orario lavorativo"]
+    return  merged, nome
 
-        for i, newRow in iter:
 
-            if not newRow["Boolean-Type"]:
-                Entrate.append(row)
-                Uscite.append(newRow)
-                break
-            else:
-                row = newRow
-
-    Entrate = pd.DataFrame(Entrate).reset_index(drop=True)
-    Uscite = pd.DataFrame(Uscite).reset_index(drop=True)
-    return  Entrate, Uscite, nome
-
-def filter(Entrate, Uscite  ):
-    return Entrate[(Uscite["Data"] - Entrate["Data"]) > datetime.timedelta(hours=6)]
+def filter(  fullDf: pd.DataFrame  ):
+    #ritorna solo le entrate
+    return fullDf[ fullDf["Differenze"] > datetime.timedelta(hours=6) ].reset_index(drop = True)
 def conteggio_per_anno(DfAnno: pd.DataFrame):
     Count = DfAnno["Turno"].value_counts().to_dict()
 
@@ -144,14 +137,13 @@ def conteggio(extractor):
     app.logger.debug("Processing files: " +  " ".join([file.name for file in files]))
     pages = [page for file in files for page in PDFIterator(file)]
     extractedPages = [page_extractor(p) for p in pages]
-    Entrate, Uscite, nome = merge(extractedPages)
-    Filtrate = filter(Entrate, Uscite)
+    merged , nome = merge(extractedPages)
+    Filtrate = filter(merged)
+    Filtrate["Turno"]  = Filtrate["Entrate"].dt.round('h').dt.hour.apply(turno)
+    Filtrate["Anno"] = Filtrate["Entrate"].dt.year
 
-    Elaborato: pd.DataFrame = Filtrate.assign(Anno=Filtrate["Data"].apply(lambda date: date.year).tolist(),
-           Turno= Filtrate["Data"].apply(lambda e: turno(  e.time() )   ).tolist())
-
-    Conteggi =  Elaborato.groupby("Anno", group_keys=False).apply(conteggio_per_anno).fillna(0).to_list( )
-    print(Conteggi)
+    Filtrate["Settimana"] = Filtrate["Entrate"].dt.weekday.apply( lambda x: w_days[x])
+    Conteggi =  Filtrate.groupby("Anno", group_keys=False).apply(conteggio_per_anno).fillna(0).to_list( )
     return  jsonify( Values = Conteggi  , Nome = nome)
 
 
@@ -167,72 +159,41 @@ def time_to_timedelta(t):
     return datetime.timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
 
 
-def round_to_nearest_hour(td):
-    """Round a timedelta to the nearest hour."""
-    # Extract total minutes
-    total_minutes = td.total_seconds() / 60
-
-    # If minutes are 30 or more, round up, else round down
-    if total_minutes % 60 >= 30:
-        # Round up by adding the necessary time to get the next hour
-        return datetime.timedelta(hours=(td.seconds // 3600) + 1, minutes=0)
-    else:
-        # Round down
-        return datetime.timedelta(hours=td.seconds // 3600, minutes=0)
-
-
-def differenziale_turni(df,Uscite = False):
-    # Calculate EntrateOreMinuti and EntrateUfficiali
-    dfOreMinuti = df['Data'].dt.time.apply(time_to_timedelta)
-    dfUfficiali = dfOreMinuti.apply( round_to_nearest_hour )
-    # Calculate Gaps (differences in timedelta)
-    Gaps = ( -1 if Uscite else  1  ) * (dfUfficiali - dfOreMinuti)
-
-    # Handle Anticipi: convert gaps to minutes and apply the min(5) constraint
-    Anticipi = Gaps[Gaps > datetime.timedelta(0) ].dropna().apply(lambda x: min(x.total_seconds() / 60, 5))
-
-    return  Anticipi
-
 @app.route('/api/parse/<extractor>/<what>', methods=['POST'])
 @cross_origin()
 def parse(extractor, what):
-    try:
-        # Validate extractor
-        if extractor not in extractorsTable:
-            return jsonify({"error": "Invalid extractor"}), 400
 
-        page_extractor: PageExtractor = extractorsTable[extractor]
+    # Validate extractor
+    if extractor not in extractorsTable:
+        return jsonify({"error": "Invalid extractor"}), 400
 
-        # Ensure files are provided
-        files = list(request.files.values())
-        if not files:
-            return jsonify({"error": "No files provided"}), 400
+    page_extractor = extractorsTable[extractor]
 
-        app.logger.debug("Processing files: " + " ".join([file.name for file in files]))
+    # Ensure files are provided
+    files = list(request.files.values())
+    if not files:
+        return jsonify({"error": "No files provided"}), 400
 
-        # Process PDF pages
-        pages = [page for file in files for page in PDFIterator(file)]
-        df = pd.concat([page_extractor(p).read().with_datetime()  for p in pages])
-        print("Parsing")
-        print(df)
-        # Filter by 'Tipo' if 'what' is provided
-        if what != "full":
-            tipo = "E" if what.lower() == "entrate" else "U"
-            df = df[df["Tipo"] == tipo]
+    app.logger.debug("Parsing files: " + " ".join([file.name for file in files]))
 
-        # Convert to CSV
-        output = io.StringIO()
-        df.to_csv(output, index=False)
-        output.seek(0)
+    # Process PDF pages
+    extractors = [  page_extractor(  page ) for file in files for page in PDFIterator(file)]
+    df, nome = merge(extractors)
+    # Filter by 'Tipo' if 'what' is provided
+    if what != "full":
+        tipo = "E" if what.lower() == "entrate" else "U"
+        df = df[df["Tipo"] == tipo]
 
-        # Return response
-        response = Response(output, mimetype='text/csv')
-        response.headers['Content-Disposition'] = 'attachment; filename=data.csv'
-        return response
+    # Convert to CSV
+    output = io.StringIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
 
-    except Exception as e:
-        app.logger.error(f"Error processing files: {e}")
-        return jsonify({"error": str(e)}), 500
+    # Return response
+    response = Response(output, mimetype='text/csv')
+    response.headers['Content-Disposition'] = f'attachment; filename={nome}.csv'
+    return response
+
 
 
 @app.route('/api/differenziale', methods=['POST'])
@@ -241,17 +202,12 @@ def differenziale( ):
     files = list(request.files.values())
     app.logger.debug("Processing files: " + " ".join([file.name for file in files]))
     pages = [page for file in files for page in PDFIterator(file)]
-    extractedPages = [PoliclinicoExtractor(p) for p in pages]
-    Entrate, Uscite, nome = merge(extractedPages)
-
-    anticipi_entrate = sum( differenziale_turni(Entrate).to_list())
+    extractors = [PoliclinicoExtractor(p) for p in pages]
+    pages, nome = merge( extractors )
 
 
-    anticipi_uscite= sum(differenziale_turni(Uscite, Uscite = True).to_list())
-
-    print( anticipi_entrate, anticipi_uscite)
-    return  jsonify( entrate = anticipi_entrate ,  uscite = anticipi_uscite , Nome = nome )
-
+    dEntrata, dUscita = Core.differenziale(pages)
+    return  jsonify(  entrate = dEntrata.sum() ,  uscite = dUscita.sum() , Nome = nome )
 
 
 # Main
