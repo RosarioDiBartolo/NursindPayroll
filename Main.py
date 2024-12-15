@@ -112,7 +112,9 @@ def merge(extractors: list[PageExtractor]):
     merged["Entrata"] = Entrate["Data"]
     merged["Uscita"] = Uscite["Data"]
     merged["Differenza"]  =  merged["Uscita"] - merged["Entrata"]
-    merged["Orario lavorativo"] = Entrate["Orario lavorativo"] + Uscite["Orario lavorativo"]
+    merged["Orario lavorativo entrata"] =  Entrate["Orario lavorativo"]
+    merged["Orario lavorativo uscita"] =  Uscite["Orario lavorativo"]
+
     return  merged, nome
 
 
@@ -140,6 +142,7 @@ def conteggio(extractor):
     extractedPages = [page_extractor(p) for p in pages]
     merged , nome = merge(extractedPages)
     Filtrate = filter(merged)
+
     Filtrate["Turno"]  = Filtrate["Entrata"].dt.round('h').dt.hour.apply(turno)
     Filtrate["Anno"] = Filtrate["Entrata"].dt.year
 
@@ -195,6 +198,31 @@ def parse(extractor, what: str):
     return response
 
 
+def orario_ideale_entrata( row):
+    turno = row["Turno"]
+    orario_lavorativo = row["Ora lavorativo entrata"]
+    if turno == "Mattina":
+        ora = 7
+    if turno == "Pomeriggio":
+        ora =  14
+    else:
+        ora = 21 if orario_lavorativo >= 3 else 8
+
+
+    return  row["Entrata"].replace(hour = ora)
+def orario_ideale_uscita(row):
+    turno = row["Turno"]
+    orario_lavorativo = row["Ora lavorativo entrata"]
+
+    if turno == "Mattina":
+        ora = 14
+    if turno == "Pomeriggio":
+        ora = 21 if orario_lavorativo == 7 else 20
+    else:
+        ora = 7
+
+    return  row["Entrata"].replace(hour = ora, minute = 0)
+
 
 @app.route('/api/differenziale', methods=['POST'])
 @cross_origin()
@@ -205,22 +233,24 @@ def differenziale( ):
     extractors = [PoliclinicoExtractor(p) for p in pages]
     grouped, nome = merge( extractors )
 
-    grouped["Data ideale entrata"] = grouped["Entrata"].dt.round('h')
-    grouped["Data ideale uscita"] = grouped["Data ideale entrata"] +  grouped["Orario lavorativo"]
+    grouped["Turno"] = grouped["Entrata"].dt.round('h').dt.hour.apply(turno)
+    grouped["Ora lavorativo entrata"] = grouped["Orario lavorativo entrata"].dt.round("h").dt.total_seconds() // 3600
 
-    grouped["Differenza uscita"] =  grouped["Data ideale uscita"] - grouped["Uscita"]
+    grouped["Orario ideale entrata"] = grouped.apply(orario_ideale_entrata, axis = 1)
+    grouped["Orario ideale uscita"] = grouped.apply(orario_ideale_uscita, axis=1)
 
-    grouped["Differenza entrata"] = grouped["Data ideale entrata"] - grouped["Entrata"]
+    #grouped["Data ideale uscita"] = grouped["Data ideale entrata"] +  grouped["Orario lavorativo"]
 
-    MinutiDifferenzeEntrata = grouped["Differenza entrata"].dt.total_seconds() / 60
-    MinutiDifferenzeUscita = grouped["Differenza uscita"].dt.total_seconds() / 60
+    #grouped["Differenza uscita"] =  grouped["Data ideale uscita"] - grouped["Uscita"]
+    #grouped["Differenza entrata"] = grouped["Data ideale entrata"] - grouped["Entrata"]
+    print(grouped["Orario ideale entrata"])
+    grouped["Differenza entrata"] =  - ( grouped["Entrata"] - grouped["Orario ideale entrata"] ).dt.total_seconds() / 60
+    grouped["Differenza uscita"] = (grouped["Uscita"] - grouped["Orario ideale uscita"]).dt.total_seconds() / 60
 
-    print(MinutiDifferenzeEntrata)
 
-    print(MinutiDifferenzeUscita)
-    MinutiTagliatiEntrata = np.maximum(np.minimum(MinutiDifferenzeEntrata, 5), 0)
+    MinutiTagliatiEntrata = np.maximum(np.minimum(grouped["Differenza entrata"], 5), 0)
 
-    MinutiTagliatiUscita = np.maximum(np.minimum(MinutiDifferenzeUscita, 5), 0)
+    MinutiTagliatiUscita = np.maximum(np.minimum(grouped["Differenza uscita"], 5), 0)
 
 
 
