@@ -1,5 +1,7 @@
 import datetime
 import traceback
+
+import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, send_file,   request, Response
 from flask_cors import cross_origin, CORS
@@ -8,7 +10,6 @@ import io
 
 from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
 from WorkersAnalyzer.Core import PDFIterator, turno
-import  WorkersAnalyzer.Core as Core
 from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
 from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
 from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
@@ -108,16 +109,16 @@ def merge(extractors: list[PageExtractor]):
     Entrate = pages[pages["Tipo"] == "E"].reset_index(drop=True)
 
     Uscite = pages[pages["Tipo"] == "U"].reset_index(drop=True)
-    merged["Entrate"] = Entrate["Data"]
-    merged["Uscite"] = Uscite["Data"]
-    merged["Differenze"]  =  merged["Uscite"] - merged["Entrate"]
+    merged["Entrata"] = Entrate["Data"]
+    merged["Uscita"] = Uscite["Data"]
+    merged["Differenza"]  =  merged["Uscita"] - merged["Entrata"]
     merged["Orario lavorativo"] = Entrate["Orario lavorativo"] + Uscite["Orario lavorativo"]
     return  merged, nome
 
 
 def filter(  fullDf: pd.DataFrame  ):
     #ritorna solo le entrate
-    return fullDf[ fullDf["Differenze"] > datetime.timedelta(hours=6) ].reset_index(drop = True)
+    return fullDf[ fullDf["Differenza"] > datetime.timedelta(hours=6) ].reset_index(drop = True)
 def conteggio_per_anno(DfAnno: pd.DataFrame):
     Count = DfAnno["Turno"].value_counts().to_dict()
 
@@ -139,10 +140,10 @@ def conteggio(extractor):
     extractedPages = [page_extractor(p) for p in pages]
     merged , nome = merge(extractedPages)
     Filtrate = filter(merged)
-    Filtrate["Turno"]  = Filtrate["Entrate"].dt.round('h').dt.hour.apply(turno)
-    Filtrate["Anno"] = Filtrate["Entrate"].dt.year
+    Filtrate["Turno"]  = Filtrate["Entrata"].dt.round('h').dt.hour.apply(turno)
+    Filtrate["Anno"] = Filtrate["Entrata"].dt.year
 
-    Filtrate["Settimana"] = Filtrate["Entrate"].dt.weekday.apply( lambda x: w_days[x])
+    Filtrate["Settimana"] = Filtrate["Entrata"].dt.weekday.apply( lambda x: w_days[x])
     Conteggi =  Filtrate.groupby("Anno", group_keys=False).apply(conteggio_per_anno).fillna(0).to_list( )
     return  jsonify( Values = Conteggi  , Nome = nome)
 
@@ -161,7 +162,7 @@ def time_to_timedelta(t):
 
 @app.route('/api/parse/<extractor>/<what>', methods=['POST'])
 @cross_origin()
-def parse(extractor, what):
+def parse(extractor, what: str):
 
     # Validate extractor
     if extractor not in extractorsTable:
@@ -181,8 +182,7 @@ def parse(extractor, what):
     df, nome = merge(extractors)
     # Filter by 'Tipo' if 'what' is provided
     if what != "full":
-        tipo = "E" if what.lower() == "entrate" else "U"
-        df = df[df["Tipo"] == tipo]
+        df = df[ what.lower()]
 
     # Convert to CSV
     output = io.StringIO()
@@ -203,11 +203,28 @@ def differenziale( ):
     app.logger.debug("Processing files: " + " ".join([file.name for file in files]))
     pages = [page for file in files for page in PDFIterator(file)]
     extractors = [PoliclinicoExtractor(p) for p in pages]
-    pages, nome = merge( extractors )
+    grouped, nome = merge( extractors )
+
+    grouped["Data ideale entrata"] = grouped["Entrata"].dt.round('h')
+    grouped["Data ideale uscita"] = grouped["Data ideale entrata"] +  grouped["Orario lavorativo"]
+
+    grouped["Differenza uscita"] =  grouped["Data ideale uscita"] - grouped["Uscita"]
+
+    grouped["Differenza entrata"] = grouped["Data ideale entrata"] - grouped["Entrata"]
+
+    MinutiDifferenzeEntrata = grouped["Differenza entrata"].dt.total_seconds() / 60
+    MinutiDifferenzeUscita = grouped["Differenza uscita"].dt.total_seconds() / 60
+
+    print(MinutiDifferenzeEntrata)
+
+    print(MinutiDifferenzeUscita)
+    MinutiTagliatiEntrata = np.maximum(np.minimum(MinutiDifferenzeEntrata, 5), 0)
+
+    MinutiTagliatiUscita = np.maximum(np.minimum(MinutiDifferenzeUscita, 5), 0)
 
 
-    dEntrata, dUscita = Core.differenziale(pages)
-    return  jsonify(  entrate = dEntrata.sum() ,  uscite = dUscita.sum() , Nome = nome )
+
+    return  jsonify(  entrate = MinutiTagliatiEntrata.sum() ,  uscite = MinutiTagliatiUscita.sum() , Nome = nome )
 
 
 # Main
