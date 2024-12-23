@@ -1,10 +1,11 @@
 
 from Core import PDFIterator
-from backend.WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
+from backend.WorkersAnalyzer.Extractors.MarcheExtractor import MarcheExtractor
 
-file = "C:\\Users\\Rosario\\Downloads\\2013 PARZ.pdf"
+file = "C:\\Users\\Rosario\\Downloads\\CARTELLINO_2021_6_FCCMHL85H12H769C.pdf"
 
 pages = list(PDFIterator(file))
 
-df = PoliclinicoExtractor(pages[0]).data
+extractor = MarcheExtractor(pages[0])
+
 

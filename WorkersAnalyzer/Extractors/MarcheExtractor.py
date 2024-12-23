@@ -21,11 +21,11 @@ class MarcheExtractor(PageExtractor):
         match = MarcheExtractor.PatternData.search(row)
         if match and EntrateUscite:
             giorno = int(match.group().split()[0])
+            return [RowExtract(self, tipo=tipo, giorno=giorno, ora= int( orario[:2]), minuto= int( orario[3:])) for (tipo, orario) in
+                    EntrateUscite]
         else:
             return []
 
-        return [ RowExtract (  self,  tipo= tipo, giorno=giorno, ora= orario[:2], minuto=orario[3:]  ) for (tipo, orario) in
-                EntrateUscite]
 
     def extract_name(self):
         # The assumption is that the name is in the format "SURNAME Cognome FIRSTNAME Nome"
