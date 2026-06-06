@@ -6,7 +6,7 @@ import bs4
 
 
 
-base = 'https://sportellodipendenti.policlinico.unict.it/gp4web'
+base = 'https://sportellodipendenti.policlinicorodolicosanmarco.it/gp4web'
 
 mail = 'silvana.mangione@policlinico.unict.it'
 dashboard_suf = '/common/Main.do'
@@ -18,7 +18,7 @@ headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'it,it-IT;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Connection': 'keep-alive',
-    'Referer': 'https://sportellodipendenti.policlinico.unict.it/gp4web/common/Main.do?',
+    'Referer': f'{base}/common/Main.do?',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-Site': 'same-origin',
@@ -59,6 +59,7 @@ def invalidDate(date: datetime) -> bool:
 
 def login(username, password):
     with requests.session() as session:
+        session.verify = False
         #set browser headers
         session.headers.update( headers)
         #The requests must follow this exact order
@@ -80,7 +81,7 @@ def login(username, password):
 
         #The requests must follow this exact order
         log = session.post(
-            'https://sportellodipendenti.policlinico.unict.it/gp4web/restrict/j_security_check',
+            f'{base}/restrict/j_security_check',
             data = data,
         )
 
@@ -105,7 +106,7 @@ def crawl(session, anno, mese, username):
     if invalidDate(datetime(day=1, month= month_mapping[mese]  , year=anno ) ):
         raise Exception(f"Invalid date...")
 
-    conferma = session.post(    'https://sportellodipendenti.policlinico.unict.it/gp4web/ss/CedolinoRichiestaConferma.do?ccsForm=Appoggio:Edit',data = {
+    conferma = session.post(    f'{base}/ss/CedolinoRichiestaConferma.do?ccsForm=Appoggio:Edit',data = {
         'anno': anno,
         'par': mese[:3],
         'ci': username,
@@ -118,7 +119,7 @@ def crawl(session, anno, mese, username):
 
 
     for i in range(10):
-        cedolini = session.get("https://sportellodipendenti.policlinico.unict.it/gp4web/ss/CedolinoRichiesta.do?")
+        cedolini = session.get(f"{base}/ss/CedolinoRichiesta.do?")
         s = bs4.BeautifulSoup(cedolini.text, "html.parser")
         interested_link = s.select("a.AFCLink")[1]
         words = interested_link.get('title').split()
@@ -129,7 +130,7 @@ def crawl(session, anno, mese, username):
         print("Required", mese, anno)
         if mese == month and int(year)== int(anno):
             print("Cedolino Richiesta trovato")
-            return session.post("https://sportellodipendenti.policlinico.unict.it/gp4web/ss/UploadDownload",
+            return session.post(f"{base}/ss/UploadDownload",
                                 data={"dataSource": "jdbc/gp4web", "functionName": "verify_ci",
                                       "p1": "\'CEDOLINO_RICHIESTO\'", "p2": username})
 
@@ -141,4 +142,4 @@ def crawl(session, anno, mese, username):
 
 if __name__ == '__main__':
     session = login("30105", "cespiti")
-    print(crawl(session, 2019, 1,"30105" ))
+    print(crawl(session, 2026, "GENNAIO","30105" ))
