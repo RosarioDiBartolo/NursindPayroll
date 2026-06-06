@@ -8,12 +8,7 @@ import requests
 import io
 
 from WorkersAnalyzer.BPC.crawler import crawl, mesi, login
-from WorkersAnalyzer.Core import PDFIterator, turno
-from WorkersAnalyzer.Extractors.PoliclinicoExtractor import PoliclinicoExtractor
-from WorkersAnalyzer.Extractors.PisaExtractor import PisaExtractor
-from WorkersAnalyzer.Extractors.GaribaldiExtractor import GaribaldiExtractor
-from WorkersAnalyzer.Extractors.MarcheExtractor import MarcheExtractor
-from WorkersAnalyzer.Extractors.PageExtractor import PageExtractor, w_days
+ 
 from config import app, port
 
 app = Flask(__name__)
