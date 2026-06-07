@@ -25,10 +25,12 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"timeout": 30}}
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     CREDENTIAL_ENCRYPTION_KEY = os.getenv("CREDENTIAL_ENCRYPTION_KEY", "")
-    CREDENTIAL_TTL_SECONDS = int(os.getenv("CREDENTIAL_TTL_SECONDS", "43200"))
     OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR", INSTANCE_DIR / "crawl_outputs"))
     FILE_RETENTION_SECONDS = int(os.getenv("FILE_RETENTION_SECONDS", "86400"))
     JOB_RETENTION_DAYS = int(os.getenv("JOB_RETENTION_DAYS", "30"))
+    BATCH_JOB_TIMEOUT_SECONDS = int(
+        os.getenv("BATCH_JOB_TIMEOUT_SECONDS", "43200")
+    )
     CRAWLER_BASE_URL = os.getenv(
         "CRAWLER_BASE_URL",
         "https://sportellodipendenti.policlinicorodolicosanmarco.it/gp4web",

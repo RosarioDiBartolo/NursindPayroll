@@ -1,5 +1,3 @@
-from datetime import date
-
 import pytest
 
 from nursind.crawler import CrawlerError, InvalidCrawlerResponse, PayrollCrawler
@@ -34,10 +32,14 @@ def crawler():
     )
 
 
-def test_rejects_future_period():
-    today = date.today()
+def test_period_has_no_year_limit():
+    crawler().validate_period(2000, 1)
+    crawler().validate_period(3000, 12)
+
+
+def test_rejects_invalid_month():
     with pytest.raises(CrawlerError):
-        crawler().validate_period(today.year + 1, 1)
+        crawler().validate_period(2000, 13)
 
 
 def test_download_validates_pdf_signature():

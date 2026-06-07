@@ -1,122 +1,58 @@
-import {
-  useQueryClient,
-  useMutation,
-  useQuery,
-  type QueryClient,
-  type UseQueryResult,
-} from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import {
-  createPayrollJob,
+  cancelPayrollBatch,
+  createPayrollBatch,
   createPayrollSession,
+  deletePayrollBatch,
   deletePayrollSession,
-  downloadPayrollPdf,
-  getPayrollJob,
+  retryPayrollBatch,
 } from "../api/payroll-api";
-import type { PayrollApiError } from "../api/payroll-errors";
-import {
-  isTerminalPayrollJobStatus,
-  type CreatePayrollJobInput,
-  type PayrollCredentials,
-  type PayrollJob,
-  type PayrollPeriod,
-  type PayrollSession,
+import type {
+  CreatePayrollBatchInput,
+  PayrollCredentials,
 } from "../api/payroll-types";
-import { payrollKeys } from "./payroll-keys";
-
-export interface PayrollJobQueryOptions {
-  enabled?: boolean;
-}
 
 export function useCreatePayrollSession() {
-  return useMutation<PayrollSession, PayrollApiError, PayrollCredentials>({
-    mutationFn: (credentials) => createPayrollSession(credentials),
+  return useMutation({
+    mutationFn: (credentials: PayrollCredentials) =>
+      createPayrollSession(credentials),
     retry: false,
-  });
-}
-
-export async function removePayrollSessionQueries(
-  queryClient: QueryClient,
-  sessionId: string
-): Promise<void> {
-  await queryClient.cancelQueries({
-    queryKey: payrollKeys.session(sessionId),
-  });
-  queryClient.removeQueries({
-    queryKey: payrollKeys.session(sessionId),
   });
 }
 
 export function useDeletePayrollSession() {
-  const queryClient = useQueryClient();
-
-  return useMutation<void, PayrollApiError, string>({
-    mutationFn: (sessionId) => deletePayrollSession(sessionId),
-    onMutate: (sessionId) => removePayrollSessionQueries(queryClient, sessionId),
+  return useMutation({
+    mutationFn: (sessionId: string) => deletePayrollSession(sessionId),
     retry: false,
   });
 }
 
-export function useCreatePayrollJob() {
-  const queryClient = useQueryClient();
-
-  return useMutation<PayrollJob, PayrollApiError, CreatePayrollJobInput>({
-    mutationFn: (input) => createPayrollJob(input),
-    onSuccess: (job, input) => {
-      queryClient.setQueryData(
-        payrollKeys.job(input.sessionId, job.id),
-        job
-      );
-    },
+export function useCreatePayrollBatch(sessionId: string) {
+  return useMutation({
+    mutationFn: (input: CreatePayrollBatchInput) =>
+      createPayrollBatch(sessionId, input),
     retry: false,
   });
 }
 
-export function usePayrollJob(
-  sessionId: string,
-  jobId: string | undefined,
-  options: PayrollJobQueryOptions = {}
-): UseQueryResult<PayrollJob, PayrollApiError> {
-  const { enabled = true } = options;
-
-  return useQuery<PayrollJob, PayrollApiError>({
-    queryKey: payrollKeys.job(sessionId, jobId ?? ""),
-    queryFn: ({ signal }) => getPayrollJob(jobId!, signal),
-    enabled: enabled && Boolean(jobId),
-    refetchInterval: (query) => {
-      const job = query.state.data;
-      return job && isTerminalPayrollJobStatus(job.status)
-        ? false
-        : 2_000;
-    },
+export function useRetryPayrollBatch() {
+  return useMutation({
+    mutationFn: (batchId: string) => retryPayrollBatch(batchId),
+    retry: false,
   });
 }
 
-export interface PayrollPdfDownload {
-  blob: Blob;
-  jobId: string;
-  period: PayrollPeriod;
+export function useCancelPayrollBatch() {
+  return useMutation({
+    mutationFn: (batchId: string) => cancelPayrollBatch(batchId),
+    retry: false,
+  });
 }
 
-export interface PayrollPdfDownloadRequest {
-  jobId: string;
-  period: PayrollPeriod;
-}
-
-export function useDownloadPayrollPdf() {
-  return useMutation<
-    PayrollPdfDownload[],
-    PayrollApiError,
-    PayrollPdfDownloadRequest[]
-  >({
-    mutationFn: (requests) =>
-      Promise.all(
-        requests.map(async ({ jobId, period }) => ({
-          blob: await downloadPayrollPdf(jobId),
-          jobId,
-          period,
-        }))
-      ),
+export function useDeletePayrollBatch() {
+  return useMutation({
+    mutationFn: (batchId: string) => deletePayrollBatch(batchId),
     retry: false,
   });
 }

@@ -3,9 +3,14 @@ export interface PayrollCredentials {
   password: string;
 }
 
+export type PayrollSessionStatus = "active" | "delete_requested";
+
 export interface PayrollSession {
   id: string;
-  expires_in: number;
+  username: string;
+  status: PayrollSessionStatus;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PayrollPeriod {
@@ -14,15 +19,28 @@ export interface PayrollPeriod {
 }
 
 export type PayrollJobStatus =
+  | "pending"
   | "queued"
   | "running"
   | "completed"
   | "failed"
+  | "cancelled"
   | "expired";
+
+export type PayrollBatchStatus =
+  | "queued"
+  | "running"
+  | "blocked"
+  | "cancel_requested"
+  | "cancelled"
+  | "completed"
+  | "delete_requested";
 
 export interface PayrollJob {
   id: string;
   session_id: string;
+  batch_id: string;
+  sequence: number;
   username: string;
   year: number;
   month: number;
@@ -36,15 +54,35 @@ export interface PayrollJob {
   download_url: string | null;
 }
 
-export interface CreatePayrollJobInput extends PayrollPeriod {
-  sessionId: string;
+export interface PayrollBatch {
+  id: string;
+  session_id: string;
+  status: PayrollBatchStatus;
+  start_year: number;
+  start_month: number;
+  end_year: number;
+  end_month: number;
+  error: string | null;
+  revision: number;
+  counts: {
+    total: number;
+    completed: number;
+    failed: number;
+    pending: number;
+  };
+  jobs: PayrollJob[];
+  created_at: string;
+  updated_at: string;
 }
 
-export const TERMINAL_PAYROLL_JOB_STATUSES: ReadonlySet<PayrollJobStatus> =
-  new Set(["completed", "failed", "expired"]);
+export interface PayrollSessionSnapshot {
+  session: PayrollSession;
+  batches: PayrollBatch[];
+}
 
-export function isTerminalPayrollJobStatus(
-  status: PayrollJobStatus
-): boolean {
-  return TERMINAL_PAYROLL_JOB_STATUSES.has(status);
+export interface CreatePayrollBatchInput {
+  start_year: number;
+  start_month: number;
+  end_year: number;
+  end_month: number;
 }

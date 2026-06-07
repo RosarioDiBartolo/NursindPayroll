@@ -4,7 +4,7 @@ from pathlib import Path
 
 from . import create_app
 from .extensions import db
-from .models import CrawlJob, utcnow
+from .models import CrawlBatch, CrawlJob, utcnow
 
 
 def cleanup_once() -> None:
@@ -19,9 +19,24 @@ def cleanup_once() -> None:
             if job.output_path:
                 Path(job.output_path).unlink(missing_ok=True)
             job.status = "expired"
+            if job.batch:
+                job.batch.bump()
 
         cutoff = now - timedelta(days=app.config["JOB_RETENTION_DAYS"])
-        CrawlJob.query.filter(CrawlJob.created_at < cutoff).delete(
+        old_batches = CrawlBatch.query.filter(
+            CrawlBatch.created_at < cutoff,
+            CrawlBatch.status.in_(["completed", "cancelled"]),
+        ).all()
+        for batch in old_batches:
+            for job in batch.jobs:
+                if job.output_path:
+                    Path(job.output_path).unlink(missing_ok=True)
+            db.session.delete(batch)
+
+        CrawlJob.query.filter(
+            CrawlJob.batch_id.is_(None),
+            CrawlJob.created_at < cutoff,
+        ).delete(
             synchronize_session=False
         )
         db.session.commit()

@@ -1,6 +1,8 @@
 # Nursind Backend
 
-Flask API and RQ worker for asynchronous payroll PDF crawling.
+Flask API and RQ worker for permanent crawl sessions and autonomous,
+strictly-sequential payroll batches. Session state is streamed to clients over
+server-sent events.
 
 ## Local development
 

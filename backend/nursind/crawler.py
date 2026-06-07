@@ -1,5 +1,4 @@
 import time
-from datetime import date
 
 import requests
 from bs4 import BeautifulSoup
@@ -115,11 +114,8 @@ class PayrollCrawler:
 
     @staticmethod
     def validate_period(year: int, month: int) -> None:
-        today = date.today()
-        if year < 2019 or month not in range(1, 13):
+        if month not in range(1, 13):
             raise CrawlerError("Invalid payroll period")
-        if (year, month) > (today.year, today.month):
-            raise CrawlerError("Future payroll periods are not allowed")
 
     def download(self, session, year: int, month: int, username: str) -> bytes:
         self.validate_period(year, month)

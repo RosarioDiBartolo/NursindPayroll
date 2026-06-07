@@ -45,3 +45,21 @@ def migrate_legacy_schema() -> None:
         connection.execute(
             text(f'ALTER TABLE crawl_jobs RENAME TO "{legacy_name}"')
         )
+
+
+def migrate_current_schema() -> None:
+    inspector = inspect(db.engine)
+    if "crawl_jobs" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("crawl_jobs")}
+    migrations = {
+        "batch_id": "ALTER TABLE crawl_jobs ADD COLUMN batch_id VARCHAR(36)",
+        "sequence": (
+            "ALTER TABLE crawl_jobs ADD COLUMN sequence INTEGER NOT NULL DEFAULT 0"
+        ),
+    }
+    with db.engine.begin() as connection:
+        for column, statement in migrations.items():
+            if column not in columns:
+                connection.execute(text(statement))

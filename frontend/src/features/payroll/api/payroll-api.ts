@@ -2,92 +2,97 @@ import apiClient from "@/lib/utils";
 
 import { normalizePayrollError } from "./payroll-errors";
 import type {
-  CreatePayrollJobInput,
+  CreatePayrollBatchInput,
+  PayrollBatch,
   PayrollCredentials,
-  PayrollJob,
-  PayrollSession,
+  PayrollSessionSnapshot,
 } from "./payroll-types";
 
-export async function createPayrollSession(
-  credentials: PayrollCredentials,
-  signal?: AbortSignal
-): Promise<PayrollSession> {
+async function normalized<T>(request: () => Promise<T>): Promise<T> {
   try {
-    const response = await apiClient.post<PayrollSession>(
+    return await request();
+  } catch (error) {
+    throw normalizePayrollError(error);
+  }
+}
+
+export function createPayrollSession(
+  credentials: PayrollCredentials
+): Promise<PayrollSessionSnapshot> {
+  return normalized(async () => {
+    const response = await apiClient.post<PayrollSessionSnapshot>(
       "/crawl-sessions",
-      credentials,
-      { signal }
+      credentials
     );
     return response.data;
-  } catch (error) {
-    throw normalizePayrollError(error);
-  }
+  });
 }
 
-export async function deletePayrollSession(
+export function getPayrollSession(
+  sessionId: string
+): Promise<PayrollSessionSnapshot> {
+  return normalized(async () => {
+    const response = await apiClient.get<PayrollSessionSnapshot>(
+      `/crawl-sessions/${sessionId}`
+    );
+    return response.data;
+  });
+}
+
+export function deletePayrollSession(
+  sessionId: string
+): Promise<PayrollSessionSnapshot | undefined> {
+  return normalized(async () => {
+    const response = await apiClient.delete<PayrollSessionSnapshot>(
+      `/crawl-sessions/${sessionId}`
+    );
+    return response.status === 202 ? response.data : undefined;
+  });
+}
+
+export function createPayrollBatch(
   sessionId: string,
-  signal?: AbortSignal
-): Promise<void> {
-  try {
-    await apiClient.delete(`/crawl-sessions/${sessionId}`, { signal });
-  } catch (error) {
-    const normalizedError = normalizePayrollError(error);
-    if (normalizedError.status === 404) {
-      return;
-    }
-    throw normalizedError;
-  }
-}
-
-export async function createPayrollJob(
-  input: CreatePayrollJobInput,
-  signal?: AbortSignal
-): Promise<PayrollJob> {
-  try {
-    const response = await apiClient.post<PayrollJob>(
-      "/crawl-jobs",
-      {
-        session_id: input.sessionId,
-        year: input.year,
-        month: input.month,
-      },
-      { signal }
+  input: CreatePayrollBatchInput
+): Promise<PayrollBatch> {
+  return normalized(async () => {
+    const response = await apiClient.post<PayrollBatch>(
+      `/crawl-sessions/${sessionId}/batches`,
+      input
     );
     return response.data;
-  } catch (error) {
-    throw normalizePayrollError(error);
-  }
+  });
 }
 
-export async function getPayrollJob(
-  jobId: string,
-  signal?: AbortSignal
-): Promise<PayrollJob> {
-  try {
-    const response = await apiClient.get<PayrollJob>(
-      `/crawl-jobs/${jobId}`,
-      { signal }
+export function retryPayrollBatch(batchId: string): Promise<PayrollBatch> {
+  return normalized(async () => {
+    const response = await apiClient.post<PayrollBatch>(
+      `/crawl-batches/${batchId}/retry`
     );
     return response.data;
-  } catch (error) {
-    throw normalizePayrollError(error);
-  }
+  });
 }
 
-export async function downloadPayrollPdf(
-  jobId: string,
-  signal?: AbortSignal
-): Promise<Blob> {
-  try {
+export function cancelPayrollBatch(batchId: string): Promise<PayrollBatch> {
+  return normalized(async () => {
+    const response = await apiClient.post<PayrollBatch>(
+      `/crawl-batches/${batchId}/cancel`
+    );
+    return response.data;
+  });
+}
+
+export function deletePayrollBatch(batchId: string): Promise<void> {
+  return normalized(async () => {
+    await apiClient.delete(`/crawl-batches/${batchId}`);
+  });
+}
+
+export function downloadPayrollPdf(jobId: string): Promise<Blob> {
+  return normalized(async () => {
     const response = await apiClient.get<Blob>(
       `/crawl-jobs/${jobId}/download`,
-      {
-        responseType: "blob",
-        signal,
-      }
+      { responseType: "blob" }
     );
     return response.data;
-  } catch (error) {
-    throw normalizePayrollError(error);
-  }
+  });
 }

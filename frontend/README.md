@@ -17,13 +17,15 @@ locale non tracciato, indicando l'origin del backend senza `/api`.
 
 La home:
 
-1. crea una sessione temporanea con `POST /api/crawl-sessions`;
-2. avvia un job asincrono per ogni mese;
-3. controlla lo stato dei job;
-4. scarica i PDF completati in un archivio ZIP;
-5. elimina la sessione quando non serve piu.
+1. accede a una sessione permanente con `POST /api/crawl-sessions`, riusando
+   quella dello stesso username se esiste;
+2. crea esplicitamente uno o piu batch con un intervallo scelto dall'utente;
+3. riceve via SSE lo stato dei batch e dei job;
+4. scarica i PDF singolarmente o in un archivio ZIP;
+5. elimina esplicitamente batch o sessione quando non servono piu.
 
-Le credenziali del portale non vengono conservate nel browser dopo il login.
+Le credenziali del portale non vengono conservate nel browser. Restano cifrate
+in Redis fino all'eliminazione esplicita della sessione.
 
 ## Verifiche
 

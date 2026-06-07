@@ -51,6 +51,13 @@ I dati SQLite e le buste paga temporanee sono conservati nel volume
 `payroll_data`. Redis usa il volume `redis_data`. Le buste paga scadono dopo 24
 ore e i metadati dei job dopo 30 giorni.
 
+Le sessioni sono permanenti e associate allo username: un nuovo login con uno
+username gia noto riapre la sessione esistente e aggiorna le credenziali cifrate
+in Redis. Le credenziali restano fino all'eliminazione esplicita della sessione.
+Ogni sessione puo contenere piu batch con intervalli mensili scelti dall'utente.
+Il worker completa i mesi in ordine e non avvia il successivo se il precedente
+fallisce. Il frontend riceve gli aggiornamenti tramite SSE.
+
 `CRAWLER_TLS_VERIFY=false` resta intenzionalmente attivo finche la catena dei
 certificati del portale non viene verificata.
 

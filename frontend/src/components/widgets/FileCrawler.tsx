@@ -1,39 +1,53 @@
-import { CheckCheckIcon } from "lucide-react";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { CrawlState, CrawlStatus, monthNames } from "@/lib/payroll";
+import { CheckCheckIcon, Clock3Icon, XCircleIcon } from "lucide-react";
 
-const labels: Record<CrawlStatus, string> = {
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import type { PayrollJob } from "@/features/payroll/api/payroll-types";
+import { monthNames } from "@/lib/payroll";
+
+const labels: Record<PayrollJob["status"], string> = {
+  pending: "In attesa",
   queued: "In coda",
   running: "Elaborazione",
   completed: "Completato",
   failed: "Errore",
+  cancelled: "Annullato",
   expired: "Scaduto",
 };
 
 const FileCrawler = ({
-  state,
-  retry,
+  job,
+  download,
 }: {
-  state: CrawlState;
-  retry: () => void;
-}) => {
-  const { period, status } = state;
-  return (
-    <div className="flex gap-3 items-center overflow-y-hidden">
-      <span>
-        {period.year} {monthNames[period.month - 1]}: {labels[status]}
-      </span>
-      {(status === "queued" || status === "running") && <LoadingSpinner />}
-      {status === "completed" && (
-        <CheckCheckIcon className="text-green-600" />
+  job: PayrollJob;
+  download: () => void;
+}) => (
+  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 py-2 last:border-0">
+    <span className="text-sm">
+      {job.year} {monthNames[job.month - 1]}: {labels[job.status]}
+    </span>
+    <div className="flex items-center gap-2">
+      {(job.status === "queued" || job.status === "running") && (
+        <LoadingSpinner />
       )}
-      {(status === "failed" || status === "expired") && (
-        <button onClick={retry} className="text-red-700" title={state.error}>
-          Riprova
-        </button>
+      {job.status === "pending" && <Clock3Icon className="h-4 w-4" />}
+      {job.status === "completed" && (
+        <>
+          <CheckCheckIcon className="h-4 w-4 text-green-600" />
+          <button className="text-sm text-blue-700 underline" onClick={download}>
+            Scarica
+          </button>
+        </>
+      )}
+      {(job.status === "failed" ||
+        job.status === "cancelled" ||
+        job.status === "expired") && (
+        <XCircleIcon className="h-4 w-4 text-red-600" />
       )}
     </div>
-  );
-};
+    {job.error ? (
+      <p className="w-full text-xs text-red-700">{job.error}</p>
+    ) : null}
+  </div>
+);
 
 export default FileCrawler;

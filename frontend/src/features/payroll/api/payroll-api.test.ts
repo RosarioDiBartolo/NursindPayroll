@@ -1,40 +1,49 @@
-import { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import apiClient from "@/lib/utils";
 
-import { deletePayrollSession } from "./payroll-api";
+import { createPayrollBatch, deletePayrollSession } from "./payroll-api";
 
 vi.mock("@/lib/utils", () => ({
   default: {
+    post: vi.fn(),
     delete: vi.fn(),
   },
 }));
 
+const postMock = vi.mocked(apiClient.post);
 const deleteMock = vi.mocked(apiClient.delete);
 
-describe("deletePayrollSession", () => {
+describe("payroll API", () => {
   beforeEach(() => {
+    postMock.mockReset();
     deleteMock.mockReset();
   });
 
-  it("treats a missing session as an idempotent success", async () => {
-    deleteMock.mockRejectedValue(
-      new AxiosError(
-        "Not found",
-        "ERR_BAD_REQUEST",
-        {} as InternalAxiosRequestConfig,
-        undefined,
-        {
-          config: {} as InternalAxiosRequestConfig,
-          data: { detail: "Not found" },
-          headers: {},
-          status: 404,
-          statusText: "Not Found",
-        }
-      )
-    );
+  it("creates an explicit batch range under a session", async () => {
+    postMock.mockResolvedValue({ data: { id: "batch-1" } });
 
-    await expect(deletePayrollSession("missing")).resolves.toBeUndefined();
+    await createPayrollBatch("session-1", {
+      start_year: 2025,
+      start_month: 1,
+      end_year: 2025,
+      end_month: 3,
+    });
+
+    expect(postMock).toHaveBeenCalledWith(
+      "/crawl-sessions/session-1/batches",
+      {
+        start_year: 2025,
+        start_month: 1,
+        end_year: 2025,
+        end_month: 3,
+      }
+    );
+  });
+
+  it("deletes sessions only through an explicit API call", async () => {
+    deleteMock.mockResolvedValue({ data: undefined, status: 204 });
+    await deletePayrollSession("session-1");
+    expect(deleteMock).toHaveBeenCalledWith("/crawl-sessions/session-1");
   });
 });

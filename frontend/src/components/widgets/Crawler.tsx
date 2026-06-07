@@ -1,179 +1,226 @@
-import { useEffect, useReducer } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { SaveAllIcon } from "lucide-react";
-import { IoStopCircleOutline } from "react-icons/io5";
-import { VscDebugStart } from "react-icons/vsc";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import FileCrawler from "./FileCrawler";
 import {
-  initialPayrollControllerState,
-  payrollControllerReducer,
-} from "@/features/payroll/controller/payroll-controller";
+  downloadPayrollPdf,
+} from "@/features/payroll/api/payroll-api";
+import type {
+  PayrollBatch,
+  PayrollSessionSnapshot,
+} from "@/features/payroll/api/payroll-types";
 import {
-  getPayrollPdfFilename,
-  PAYROLL_ZIP_FILENAME,
-} from "@/features/payroll/controller/payroll-download";
-import { payrollKeys } from "@/features/payroll/query/payroll-keys";
-import {
-  useCreatePayrollJob,
-  useDownloadPayrollPdf,
-  usePayrollJob,
+  useCancelPayrollBatch,
+  useCreatePayrollBatch,
+  useDeletePayrollBatch,
+  useRetryPayrollBatch,
 } from "@/features/payroll/query/payroll-hooks";
-import { payrollPeriods } from "@/lib/payroll";
 
 interface CrawlerProps {
-  sessionId: string;
+  snapshot: PayrollSessionSnapshot;
+  connectionState: "connecting" | "connected" | "disconnected";
+  refresh: () => Promise<void>;
 }
 
-const Crawler = ({ sessionId }: CrawlerProps) => {
-  const queryClient = useQueryClient();
-  const [state, dispatch] = useReducer(
-    payrollControllerReducer,
-    initialPayrollControllerState
-  );
-  const createJob = useCreatePayrollJob();
-  const downloadPdfs = useDownloadPayrollPdf();
-  const activeJob = usePayrollJob(sessionId, state.activeJobId, {
-    enabled: state.phase === "polling" && !state.stopped,
-  });
+const currentMonth = new Date().toISOString().slice(0, 7);
 
-  useEffect(() => {
+function parseMonth(value: string) {
+  const [year, month] = value.split("-").map(Number);
+  return { year, month };
+}
+
+function batchTitle(batch: PayrollBatch) {
+  return `${batch.start_year}-${String(batch.start_month).padStart(2, "0")} - ${
+    batch.end_year
+  }-${String(batch.end_month).padStart(2, "0")}`;
+}
+
+const Crawler = ({ snapshot, connectionState, refresh }: CrawlerProps) => {
+  const [startMonth, setStartMonth] = useState("2000-01");
+  const [endMonth, setEndMonth] = useState(currentMonth);
+  const createBatch = useCreatePayrollBatch(snapshot.session.id);
+  const retryBatch = useRetryPayrollBatch();
+  const cancelBatch = useCancelPayrollBatch();
+  const deleteBatch = useDeletePayrollBatch();
+
+  const isBusy =
+    createBatch.isPending ||
+    retryBatch.isPending ||
+    cancelBatch.isPending ||
+    deleteBatch.isPending;
+
+  const batches = useMemo(
+    () => [...snapshot.batches].reverse(),
+    [snapshot.batches]
+  );
+
+  const create = async () => {
+    const start = parseMonth(startMonth);
+    const end = parseMonth(endMonth);
+    await createBatch.mutateAsync({
+      start_year: start.year,
+      start_month: start.month,
+      end_year: end.year,
+      end_month: end.month,
+    });
+    await refresh();
+  };
+
+  const downloadJob = async (jobId: string, year: number, month: number) => {
+    const blob = await downloadPayrollPdf(jobId);
+    saveAs(blob, `busta-paga-${year}-${String(month).padStart(2, "0")}.pdf`);
+  };
+
+  const downloadZip = async (batch: PayrollBatch) => {
+    const completed = batch.jobs.filter((job) => job.status === "completed");
+    const files = await Promise.all(
+      completed.map(async (job) => ({
+        job,
+        blob: await downloadPayrollPdf(job.id),
+      }))
+    );
+    const zip = new JSZip();
+    files.forEach(({ job, blob }) => {
+      zip.file(
+        `busta-paga-${job.year}-${String(job.month).padStart(2, "0")}.pdf`,
+        blob
+      );
+    });
+    saveAs(await zip.generateAsync({ type: "blob" }), `batch-${batch.id}.zip`);
+  };
+
+  const remove = async (batch: PayrollBatch) => {
     if (
-      state.stopped ||
-      state.phase !== "idle" ||
-      state.currentIndex >= payrollPeriods.length ||
-      createJob.isPending
+      !window.confirm(
+        "Eliminare definitivamente il batch, i suoi job e tutti i PDF?"
+      )
     ) {
       return;
     }
-
-    const period = payrollPeriods[state.currentIndex];
-    dispatch({ type: "job-create-requested", period });
-    createJob.mutate(
-      { sessionId, ...period },
-      {
-        onSuccess: (job) => dispatch({ type: "job-created", job }),
-        onError: (error) =>
-          dispatch({
-            type: "job-request-failed",
-            message: error.message,
-          }),
-      }
-    );
-  }, [
-    createJob,
-    sessionId,
-    state.currentIndex,
-    state.phase,
-    state.stopped,
-  ]);
-
-  useEffect(() => {
-    if (activeJob.data) {
-      dispatch({ type: "job-updated", job: activeJob.data });
-    }
-  }, [activeJob.data]);
-
-  const stop = async () => {
-    dispatch({ type: "stop" });
-    if (state.activeJobId) {
-      await queryClient.cancelQueries({
-        queryKey: payrollKeys.job(sessionId, state.activeJobId),
-      });
-    }
+    await deleteBatch.mutateAsync(batch.id);
+    await refresh();
   };
-
-  const retry = (index: number) => {
-    dispatch({ type: "retry", index });
-  };
-
-  const downloadAllFiles = () => {
-    const completed = state.states.filter(
-      (item) => item.status === "completed" && item.jobId
-    );
-    if (completed.length === 0) {
-      return;
-    }
-
-    downloadPdfs.mutate(
-      completed.map((item) => ({
-        jobId: item.jobId!,
-        period: item.period,
-      })),
-      {
-        onSuccess: async (files) => {
-          const zip = new JSZip();
-          files.forEach(({ blob, period }) => {
-            zip.file(getPayrollPdfFilename(period), blob);
-          });
-          const archive = await zip.generateAsync({ type: "blob" });
-          saveAs(archive, PAYROLL_ZIP_FILENAME);
-        },
-      }
-    );
-  };
-
-  const isComplete = state.currentIndex >= payrollPeriods.length;
 
   return (
-    <div className="mt-6">
-      <div className="max-h-72 overflow-y-auto rounded-md border border-slate-200 p-3">
-        {state.states.length === 0 ? (
-          <p className="text-sm text-slate-500">
-            Preparazione del primo periodo...
-          </p>
-        ) : (
-          state.states.map((item, index) => (
-            <FileCrawler
-              key={`${item.period.year}-${item.period.month}`}
-              state={item}
-              retry={() => retry(index)}
+    <div className="mt-6 space-y-6">
+      <section className="rounded-md border border-slate-200 p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-sm">
+            <span className="mb-1 block">Da</span>
+            <Input
+              type="month"
+              value={startMonth}
+              onChange={(event) => setStartMonth(event.target.value)}
             />
-          ))
-        )}
-      </div>
-
-      <div className="mt-4 flex items-center gap-5">
-        {state.stopped ? (
-          <button
-            type="button"
-            title="Riprendi"
-            onClick={() => dispatch({ type: "resume" })}
+          </label>
+          <label className="text-sm">
+            <span className="mb-1 block">A</span>
+            <Input
+              type="month"
+              value={endMonth}
+              onChange={(event) => setEndMonth(event.target.value)}
+            />
+          </label>
+          <Button
+            disabled={isBusy || !startMonth || !endMonth || startMonth > endMonth}
+            onClick={() => void create()}
           >
-            <VscDebugStart className="h-8 w-8" />
-          </button>
-        ) : (
-          <button type="button" title="Ferma" onClick={() => void stop()}>
-            <IoStopCircleOutline className="h-8 w-8" />
-          </button>
-        )}
-
-        <button
-          type="button"
-          title="Scarica tutti i PDF completati"
-          disabled={downloadPdfs.isPending}
-          onClick={downloadAllFiles}
-        >
-          <SaveAllIcon className="h-7 w-7" />
-        </button>
-
-        {isComplete ? (
-          <span className="text-sm text-green-700">
-            Tutti i periodi sono stati completati.
+            Crea batch
+          </Button>
+          <span className="text-xs text-slate-500">
+            SSE: {connectionState}
           </span>
+        </div>
+        {createBatch.error ? (
+          <p className="mt-2 text-sm text-red-700">
+            {createBatch.error.message}
+          </p>
         ) : null}
-      </div>
+      </section>
 
-      {activeJob.error ? (
-        <p className="mt-3 text-sm text-red-700">{activeJob.error.message}</p>
-      ) : null}
-      {downloadPdfs.error ? (
-        <p className="mt-3 text-sm text-red-700">
-          Download interrotto: nessun archivio parziale è stato creato.
+      {batches.length === 0 ? (
+        <p className="text-sm text-slate-500">
+          Nessun batch. Scegli un intervallo e creane uno.
         </p>
-      ) : null}
+      ) : (
+        batches.map((batch) => (
+          <section
+            key={batch.id}
+            className="rounded-md border border-slate-200 p-4"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold">{batchTitle(batch)}</h3>
+                <p className="text-sm text-slate-600">
+                  Stato: {batch.status} · {batch.counts.completed}/
+                  {batch.counts.total} completati
+                </p>
+                {batch.error ? (
+                  <p className="mt-1 text-sm text-red-700">{batch.error}</p>
+                ) : null}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {batch.status === "blocked" ? (
+                  <Button
+                    disabled={isBusy}
+                    onClick={() =>
+                      void retryBatch
+                        .mutateAsync(batch.id)
+                        .then(() => refresh())
+                    }
+                  >
+                    Riprova e riprendi
+                  </Button>
+                ) : null}
+                {["queued", "running", "cancel_requested"].includes(
+                  batch.status
+                ) ? (
+                  <Button
+                    variant="outline"
+                    disabled={isBusy || batch.status === "cancel_requested"}
+                    onClick={() =>
+                      void cancelBatch
+                        .mutateAsync(batch.id)
+                        .then(() => refresh())
+                    }
+                  >
+                    Annulla rimanenti
+                  </Button>
+                ) : null}
+                {batch.counts.completed > 0 ? (
+                  <Button
+                    variant="outline"
+                    onClick={() => void downloadZip(batch)}
+                  >
+                    Scarica ZIP
+                  </Button>
+                ) : null}
+                <Button
+                  variant="outline"
+                  disabled={isBusy || batch.status === "delete_requested"}
+                  onClick={() => void remove(batch)}
+                >
+                  Elimina batch
+                </Button>
+              </div>
+            </div>
+            <div className="mt-3 max-h-72 overflow-y-auto">
+              {batch.jobs.map((job) => (
+                <FileCrawler
+                  key={job.id}
+                  job={job}
+                  download={() =>
+                    void downloadJob(job.id, job.year, job.month)
+                  }
+                />
+              ))}
+            </div>
+          </section>
+        ))
+      )}
     </div>
   );
 };

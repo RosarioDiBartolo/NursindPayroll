@@ -13,10 +13,10 @@ class TestConfig:
     SQLALCHEMY_ENGINE_OPTIONS = {}
     REDIS_URL = "redis://test/0"
     CREDENTIAL_ENCRYPTION_KEY = Fernet.generate_key().decode("ascii")
-    CREDENTIAL_TTL_SECONDS = 43200
     OUTPUT_DIR = None
     FILE_RETENTION_SECONDS = 86400
     JOB_RETENTION_DAYS = 30
+    BATCH_JOB_TIMEOUT_SECONDS = 43200
     CRAWLER_BASE_URL = "https://portal.test"
     CRAWLER_EMAIL = "test@example.invalid"
     CRAWLER_TLS_VERIFY = False
