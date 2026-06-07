@@ -1,0 +1,64 @@
+from datetime import date
+
+import pytest
+
+from nursind.crawler import CrawlerError, InvalidCrawlerResponse, PayrollCrawler
+
+
+class Response:
+    def __init__(self, text="", content=b"", status_code=200):
+        self.text = text
+        self.content = content
+        self.status_code = status_code
+
+    def raise_for_status(self):
+        return None
+
+
+class Session:
+    def __init__(self, responses):
+        self.responses = iter(responses)
+
+    def request(self, *_args, **_kwargs):
+        return next(self.responses)
+
+
+def crawler():
+    return PayrollCrawler(
+        "https://portal.test",
+        "test@example.invalid",
+        False,
+        1,
+        1,
+        0,
+    )
+
+
+def test_rejects_future_period():
+    today = date.today()
+    with pytest.raises(CrawlerError):
+        crawler().validate_period(today.year + 1, 1)
+
+
+def test_download_validates_pdf_signature():
+    month = "GENNAIO"
+    session = Session(
+        [
+            Response(),
+            Response(text=f'<a class="AFCLink" title="Disponibile {month} anno 2019"></a>'),
+            Response(content=b"<html>not a pdf</html>"),
+        ]
+    )
+    with pytest.raises(InvalidCrawlerResponse):
+        crawler().download(session, 2019, 1, "user")
+
+
+def test_download_returns_pdf():
+    session = Session(
+        [
+            Response(),
+            Response(text='<a class="AFCLink" title="Disponibile GENNAIO anno 2019"></a>'),
+            Response(content=b"%PDF-1.7\ncontent"),
+        ]
+    )
+    assert crawler().download(session, 2019, 1, "user").startswith(b"%PDF")
