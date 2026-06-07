@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 
 export interface BustePagaContextProps {
-    Cookies?: object;
+    sessionId?: string;
     username?: string;
 }
  
