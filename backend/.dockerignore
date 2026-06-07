@@ -1,4 +1,12 @@
 .git
+.env
+.env.*
+.pytest_cache
+.pytest-tmp
+instance
+tests
+__pycache__
+*.py[cod]
 .venv
 __pycache__
 *.pyc

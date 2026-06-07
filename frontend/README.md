@@ -10,8 +10,8 @@ npm install
 npm run dev
 ```
 
-Se il backend non e disponibile sullo stesso origin, copia `.env.example` in
-`.env.local` e imposta `VITE_API_URL` con l'origin del backend, senza `/api`.
+Per lo sviluppo manuale impostare `VITE_API_URL` nell'ambiente o in un file
+locale non tracciato, indicando l'origin del backend senza `/api`.
 
 ## Flusso payroll
 
@@ -37,6 +37,6 @@ npm run lint
 
 L'immagine di produzione compila l'app Vite e la serve con Nginx. Nginx inoltra
 le richieste `/api` al servizio backend. Lo stack Compose completo si trova
-nella directory sorella `NursindDeployment`.
+alla root del monorepo.
 
 Firebase Authentication, Firebase Hosting e Render non sono utilizzati.
