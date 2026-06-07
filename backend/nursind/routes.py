@@ -302,6 +302,7 @@ def crawl_session_events(session_id: str):
         last_payload = None
         revision = 0
         while True:
+            db.session.expire_all()
             session = db.session.get(CrawlSession, session_id)
             if session is None:
                 yield "event: deleted\ndata: {}\n\n"

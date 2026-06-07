@@ -146,7 +146,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "nursind_crawler",
-      "community": 6,
+      "community": 1,
       "norm_label": "crawler.py"
     },
     {
@@ -156,7 +156,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "nursind_crawler_crawlererror",
-      "community": 6,
+      "community": 1,
       "norm_label": "crawlererror"
     },
     {
@@ -166,7 +166,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "nursind_crawler_authenticationerror",
-      "community": 6,
+      "community": 1,
       "norm_label": "authenticationerror"
     },
     {
@@ -210,10 +210,20 @@
       "norm_label": ".__init__()"
     },
     {
+      "label": ".log()",
+      "file_type": "code",
+      "source_file": "backend/nursind/crawler.py",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "nursind_crawler_payrollcrawler_log",
+      "community": 6,
+      "norm_label": ".log()"
+    },
+    {
       "label": "._request()",
       "file_type": "code",
       "source_file": "backend/nursind/crawler.py",
-      "source_location": "L61",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "nursind_crawler_payrollcrawler_request",
       "community": 6,
@@ -223,7 +233,7 @@
       "label": ".login()",
       "file_type": "code",
       "source_file": "backend/nursind/crawler.py",
-      "source_location": "L84",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "nursind_crawler_payrollcrawler_login",
       "community": 6,
@@ -233,7 +243,7 @@
       "label": ".validate_period()",
       "file_type": "code",
       "source_file": "backend/nursind/crawler.py",
-      "source_location": "L116",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "nursind_crawler_payrollcrawler_validate_period",
       "community": 6,
@@ -243,7 +253,7 @@
       "label": ".download()",
       "file_type": "code",
       "source_file": "backend/nursind/crawler.py",
-      "source_location": "L120",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "nursind_crawler_payrollcrawler_download",
       "community": 6,
@@ -253,7 +263,7 @@
       "label": "crawler_from_config()",
       "file_type": "code",
       "source_file": "backend/nursind/crawler.py",
-      "source_location": "L168",
+      "source_location": "L188",
       "_origin": "ast",
       "id": "nursind_crawler_crawler_from_config",
       "community": 1,
@@ -413,9 +423,29 @@
       "label": ".to_dict()",
       "file_type": "code",
       "source_file": "backend/nursind/models.py",
-      "source_location": "L133",
+      "source_location": "L139",
       "_origin": "ast",
       "id": "nursind_models_crawljob_to_dict",
+      "community": 1,
+      "norm_label": ".to_dict()"
+    },
+    {
+      "label": "CrawlJobLog",
+      "file_type": "code",
+      "source_file": "backend/nursind/models.py",
+      "source_location": "L166",
+      "_origin": "ast",
+      "id": "nursind_models_crawljoblog",
+      "community": 1,
+      "norm_label": "crawljoblog"
+    },
+    {
+      "label": ".to_dict()",
+      "file_type": "code",
+      "source_file": "backend/nursind/models.py",
+      "source_location": "L182",
+      "_origin": "ast",
+      "id": "nursind_models_crawljoblog_to_dict",
       "community": 1,
       "norm_label": ".to_dict()"
     },
@@ -633,7 +663,7 @@
       "label": "download_crawl_job()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L329",
+      "source_location": "L330",
       "_origin": "ast",
       "id": "nursind_routes_download_crawl_job",
       "community": 1,
@@ -643,7 +673,7 @@
       "label": "health()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L357",
+      "source_location": "L358",
       "_origin": "ast",
       "id": "nursind_routes_health",
       "community": 1,
@@ -700,10 +730,20 @@
       "norm_label": "crawljob"
     },
     {
-      "label": "delete_batch()",
+      "label": "_job_log()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
       "source_location": "L24",
+      "_origin": "ast",
+      "id": "nursind_tasks_job_log",
+      "community": 1,
+      "norm_label": "_job_log()"
+    },
+    {
+      "label": "delete_batch()",
+      "file_type": "code",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "nursind_tasks_delete_batch",
       "community": 1,
@@ -713,7 +753,7 @@
       "label": "CrawlBatch",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L24",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "crawlbatch",
       "community": 1,
@@ -723,7 +763,7 @@
       "label": "delete_session()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L33",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "nursind_tasks_delete_session",
       "community": 1,
@@ -733,7 +773,7 @@
       "label": "CrawlSession",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L33",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "backend_nursind_tasks_py_crawlsession",
       "community": 1,
@@ -743,7 +783,7 @@
       "label": "_finish_requested_transition()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L43",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "nursind_tasks_finish_requested_transition",
       "community": 1,
@@ -753,7 +793,7 @@
       "label": "run_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L67",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "nursind_tasks_run_crawl_batch",
       "community": 1,
@@ -763,7 +803,7 @@
       "label": "execute_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L73",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "nursind_tasks_execute_crawl_batch",
       "community": 1,
@@ -773,7 +813,7 @@
       "label": "handle_batch_failure()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L189",
+      "source_location": "L217",
       "_origin": "ast",
       "id": "nursind_tasks_handle_batch_failure",
       "community": 1,
@@ -783,7 +823,7 @@
       "label": "run_crawl_job()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L219",
+      "source_location": "L247",
       "_origin": "ast",
       "id": "nursind_tasks_run_crawl_job",
       "community": 1,
@@ -793,7 +833,7 @@
       "label": "handle_job_failure()",
       "file_type": "code",
       "source_file": "backend/nursind/tasks.py",
-      "source_location": "L228",
+      "source_location": "L256",
       "_origin": "ast",
       "id": "nursind_tasks_handle_job_failure",
       "community": 1,
@@ -806,7 +846,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_conftest",
-      "community": 12,
+      "community": 15,
       "norm_label": "conftest.py"
     },
     {
@@ -816,7 +856,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "tests_conftest_testconfig",
-      "community": 12,
+      "community": 15,
       "norm_label": "testconfig"
     },
     {
@@ -826,7 +866,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "tests_conftest_app",
-      "community": 12,
+      "community": 15,
       "norm_label": "app()"
     },
     {
@@ -836,7 +876,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "tests_conftest_client",
-      "community": 12,
+      "community": 15,
       "norm_label": "client()"
     },
     {
@@ -1120,10 +1160,20 @@
       "norm_label": "crawler()"
     },
     {
-      "label": "test_period_has_no_year_limit()",
+      "label": "test_crawler_logs_safe_request_milestones()",
       "file_type": "code",
       "source_file": "backend/tests/test_crawler.py",
       "source_location": "L35",
+      "_origin": "ast",
+      "id": "tests_test_crawler_test_crawler_logs_safe_request_milestones",
+      "community": 6,
+      "norm_label": "test_crawler_logs_safe_request_milestones()"
+    },
+    {
+      "label": "test_period_has_no_year_limit()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_crawler.py",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "tests_test_crawler_test_period_has_no_year_limit",
       "community": 6,
@@ -1133,7 +1183,7 @@
       "label": "test_rejects_invalid_month()",
       "file_type": "code",
       "source_file": "backend/tests/test_crawler.py",
-      "source_location": "L40",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "tests_test_crawler_test_rejects_invalid_month",
       "community": 6,
@@ -1143,7 +1193,7 @@
       "label": "test_download_validates_pdf_signature()",
       "file_type": "code",
       "source_file": "backend/tests/test_crawler.py",
-      "source_location": "L45",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "tests_test_crawler_test_download_validates_pdf_signature",
       "community": 6,
@@ -1153,7 +1203,7 @@
       "label": "test_download_returns_pdf()",
       "file_type": "code",
       "source_file": "backend/tests/test_crawler.py",
-      "source_location": "L58",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "tests_test_crawler_test_download_returns_pdf",
       "community": 6,
@@ -1166,7 +1216,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_tasks",
-      "community": 23,
+      "community": 12,
       "norm_label": "test_tasks.py"
     },
     {
@@ -1176,7 +1226,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore",
-      "community": 23,
+      "community": 12,
       "norm_label": "fakecredentialstore"
     },
     {
@@ -1186,7 +1236,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore_init",
-      "community": 23,
+      "community": 12,
       "norm_label": ".__init__()"
     },
     {
@@ -1196,7 +1246,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore_get",
-      "community": 23,
+      "community": 12,
       "norm_label": ".get()"
     },
     {
@@ -1206,7 +1256,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore_delete",
-      "community": 23,
+      "community": 12,
       "norm_label": ".delete()"
     },
     {
@@ -1216,7 +1266,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeportalsession",
-      "community": 23,
+      "community": 12,
       "norm_label": "fakeportalsession"
     },
     {
@@ -1226,7 +1276,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeportalsession_close",
-      "community": 23,
+      "community": 12,
       "norm_label": ".close()"
     },
     {
@@ -1236,7 +1286,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecrawler",
-      "community": 23,
+      "community": 12,
       "norm_label": "fakecrawler"
     },
     {
@@ -1246,7 +1296,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecrawler_login",
-      "community": 23,
+      "community": 12,
       "norm_label": ".login()"
     },
     {
@@ -1256,7 +1306,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecrawler_download",
-      "community": 23,
+      "community": 12,
       "norm_label": ".download()"
     },
     {
@@ -1266,7 +1316,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "tests_test_tasks_fakelock",
-      "community": 23,
+      "community": 12,
       "norm_label": "fakelock"
     },
     {
@@ -1276,7 +1326,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tests_test_tasks_fakelock_acquire",
-      "community": 23,
+      "community": 12,
       "norm_label": ".acquire()"
     },
     {
@@ -1286,7 +1336,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "tests_test_tasks_fakelock_release",
-      "community": 23,
+      "community": 12,
       "norm_label": ".release()"
     },
     {
@@ -1296,7 +1346,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeredis",
-      "community": 23,
+      "community": 12,
       "norm_label": "fakeredis"
     },
     {
@@ -1306,7 +1356,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeredis_lock",
-      "community": 23,
+      "community": 12,
       "norm_label": ".lock()"
     },
     {
@@ -1316,17 +1366,17 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "tests_test_tasks_test_worker_completes_batch_in_month_order",
-      "community": 23,
+      "community": 12,
       "norm_label": "test_worker_completes_batch_in_month_order()"
     },
     {
       "label": "test_worker_blocks_batch_and_does_not_start_next_month()",
       "file_type": "code",
       "source_file": "backend/tests/test_tasks.py",
-      "source_location": "L90",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "tests_test_tasks_test_worker_blocks_batch_and_does_not_start_next_month",
-      "community": 23,
+      "community": 12,
       "norm_label": "test_worker_blocks_batch_and_does_not_start_next_month()"
     },
     {
@@ -1460,10 +1510,20 @@
       "norm_label": "prefix"
     },
     {
-      "label": "aliases",
+      "label": "iconLibrary",
       "file_type": "code",
       "source_file": "frontend/components.json",
       "source_location": "L13",
+      "_origin": "ast",
+      "id": "frontend_components_iconlibrary",
+      "community": 7,
+      "norm_label": "iconlibrary"
+    },
+    {
+      "label": "aliases",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_components_aliases",
       "community": 7,
@@ -1473,7 +1533,7 @@
       "label": "components",
       "file_type": "code",
       "source_file": "frontend/components.json",
-      "source_location": "L14",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_components_aliases_components",
       "community": 7,
@@ -1483,11 +1543,41 @@
       "label": "utils",
       "file_type": "code",
       "source_file": "frontend/components.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "frontend_components_aliases_utils",
       "community": 7,
       "norm_label": "utils"
+    },
+    {
+      "label": "ui",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "frontend_components_aliases_ui",
+      "community": 7,
+      "norm_label": "ui"
+    },
+    {
+      "label": "lib",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "frontend_components_aliases_lib",
+      "community": 7,
+      "norm_label": "lib"
+    },
+    {
+      "label": "hooks",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "frontend_components_aliases_hooks",
+      "community": 7,
+      "norm_label": "hooks"
     },
     {
       "label": "package.json",
@@ -1640,30 +1730,20 @@
       "norm_label": "dependencies"
     },
     {
-      "label": "@radix-ui/react-label",
+      "label": "@tailwindcss/vite",
       "file_type": "code",
       "source_file": "frontend/package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "frontend_package_dependencies_radix_ui_react_label",
+      "id": "frontend_package_dependencies_tailwindcss_vite",
       "community": 8,
-      "norm_label": "@radix-ui/react-label"
-    },
-    {
-      "label": "@radix-ui/react-slot",
-      "file_type": "code",
-      "source_file": "frontend/package.json",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "frontend_package_dependencies_radix_ui_react_slot",
-      "community": 8,
-      "norm_label": "@radix-ui/react-slot"
+      "norm_label": "@tailwindcss/vite"
     },
     {
       "label": "@tanstack/react-query",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L20",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_package_dependencies_tanstack_react_query",
       "community": 8,
@@ -1673,7 +1753,7 @@
       "label": "axios",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L21",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "frontend_package_dependencies_axios",
       "community": 8,
@@ -1683,7 +1763,7 @@
       "label": "class-variance-authority",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L22",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_package_dependencies_class_variance_authority",
       "community": 8,
@@ -1693,7 +1773,7 @@
       "label": "clsx",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L23",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_package_dependencies_clsx",
       "community": 8,
@@ -1703,7 +1783,7 @@
       "label": "file-saver",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L24",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_package_dependencies_file_saver",
       "community": 8,
@@ -1713,7 +1793,7 @@
       "label": "jszip",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L25",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_package_dependencies_jszip",
       "community": 8,
@@ -1723,11 +1803,21 @@
       "label": "lucide-react",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L26",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_package_dependencies_lucide_react",
       "community": 8,
       "norm_label": "lucide-react"
+    },
+    {
+      "label": "radix-ui",
+      "file_type": "code",
+      "source_file": "frontend/package.json",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "frontend_package_dependencies_radix_ui",
+      "community": 8,
+      "norm_label": "radix-ui"
     },
     {
       "label": "react",
@@ -1760,20 +1850,40 @@
       "norm_label": "react-icons"
     },
     {
-      "label": "tailwind-merge",
+      "label": "shadcn",
       "file_type": "code",
       "source_file": "frontend/package.json",
       "source_location": "L30",
+      "_origin": "ast",
+      "id": "frontend_package_dependencies_shadcn",
+      "community": 8,
+      "norm_label": "shadcn"
+    },
+    {
+      "label": "tailwind-merge",
+      "file_type": "code",
+      "source_file": "frontend/package.json",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_package_dependencies_tailwind_merge",
       "community": 8,
       "norm_label": "tailwind-merge"
     },
     {
-      "label": "devDependencies",
+      "label": "tw-animate-css",
       "file_type": "code",
       "source_file": "frontend/package.json",
       "source_location": "L32",
+      "_origin": "ast",
+      "id": "frontend_package_dependencies_tw_animate_css",
+      "community": 8,
+      "norm_label": "tw-animate-css"
+    },
+    {
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "frontend/package.json",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "frontend_package_devdependencies",
       "community": 3,
@@ -1783,7 +1893,7 @@
       "label": "@types/file-saver",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L33",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_file_saver",
       "community": 3,
@@ -1793,7 +1903,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L34",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_node",
       "community": 3,
@@ -1803,7 +1913,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L35",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_react",
       "community": 3,
@@ -1813,7 +1923,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_react_dom",
       "community": 3,
@@ -1823,7 +1933,7 @@
       "label": "@typescript-eslint/eslint-plugin",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_typescript_eslint_eslint_plugin",
       "community": 3,
@@ -1833,37 +1943,27 @@
       "label": "@typescript-eslint/parser",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_typescript_eslint_parser",
       "community": 3,
       "norm_label": "@typescript-eslint/parser"
     },
     {
-      "label": "@vitejs/plugin-react-swc",
+      "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "frontend_package_devdependencies_vitejs_plugin_react_swc",
+      "id": "frontend_package_devdependencies_vitejs_plugin_react",
       "community": 3,
-      "norm_label": "@vitejs/plugin-react-swc"
-    },
-    {
-      "label": "autoprefixer",
-      "file_type": "code",
-      "source_file": "frontend/package.json",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "frontend_package_devdependencies_autoprefixer",
-      "community": 3,
-      "norm_label": "autoprefixer"
+      "norm_label": "@vitejs/plugin-react"
     },
     {
       "label": "eslint",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_eslint",
       "community": 3,
@@ -1873,7 +1973,7 @@
       "label": "eslint-plugin-react-hooks",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_eslint_plugin_react_hooks",
       "community": 3,
@@ -1883,21 +1983,11 @@
       "label": "eslint-plugin-react-refresh",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L43",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_eslint_plugin_react_refresh",
       "community": 3,
       "norm_label": "eslint-plugin-react-refresh"
-    },
-    {
-      "label": "postcss",
-      "file_type": "code",
-      "source_file": "frontend/package.json",
-      "source_location": "L44",
-      "_origin": "ast",
-      "id": "frontend_package_devdependencies_postcss",
-      "community": 3,
-      "norm_label": "postcss"
     },
     {
       "label": "tailwindcss",
@@ -1940,16 +2030,6 @@
       "norm_label": "vitest"
     },
     {
-      "label": "postcss.config.js",
-      "file_type": "code",
-      "source_file": "frontend/postcss.config.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "frontend_postcss_config",
-      "community": 15,
-      "norm_label": "postcss.config.js"
-    },
-    {
       "label": "App.tsx",
       "file_type": "code",
       "source_file": "frontend/src/App.tsx",
@@ -1983,7 +2063,7 @@
       "label": "BustePaga()",
       "file_type": "code",
       "source_file": "frontend/src/Pages/BustePaga.tsx",
-      "source_location": "L20",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "pages_bustepaga_bustepaga",
       "community": 4,
@@ -2100,24 +2180,94 @@
       "norm_label": "buttonvariants"
     },
     {
-      "label": "ButtonProps",
+      "label": "Button()",
       "file_type": "code",
       "source_file": "frontend/src/components/ui/button.tsx",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "ui_button_buttonprops",
-      "community": 4,
-      "norm_label": "buttonprops"
-    },
-    {
-      "label": "Button",
-      "file_type": "code",
-      "source_file": "frontend/src/components/ui/button.tsx",
-      "source_location": "L42",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "ui_button_button",
       "community": 4,
-      "norm_label": "button"
+      "norm_label": "button()"
+    },
+    {
+      "label": "card.tsx",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ui_card",
+      "community": 4,
+      "norm_label": "card.tsx"
+    },
+    {
+      "label": "Card()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "ui_card_card",
+      "community": 4,
+      "norm_label": "card()"
+    },
+    {
+      "label": "CardHeader()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "ui_card_cardheader",
+      "community": 4,
+      "norm_label": "cardheader()"
+    },
+    {
+      "label": "CardTitle()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "ui_card_cardtitle",
+      "community": 4,
+      "norm_label": "cardtitle()"
+    },
+    {
+      "label": "CardDescription()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "ui_card_carddescription",
+      "community": 4,
+      "norm_label": "carddescription()"
+    },
+    {
+      "label": "CardAction()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "ui_card_cardaction",
+      "community": 4,
+      "norm_label": "cardaction()"
+    },
+    {
+      "label": "CardContent()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "ui_card_cardcontent",
+      "community": 4,
+      "norm_label": "cardcontent()"
+    },
+    {
+      "label": "CardFooter()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "ui_card_cardfooter",
+      "community": 4,
+      "norm_label": "cardfooter()"
     },
     {
       "label": "input.tsx",
@@ -2130,24 +2280,14 @@
       "norm_label": "input.tsx"
     },
     {
-      "label": "InputProps",
+      "label": "Input()",
       "file_type": "code",
       "source_file": "frontend/src/components/ui/input.tsx",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "ui_input_inputprops",
-      "community": 4,
-      "norm_label": "inputprops"
-    },
-    {
-      "label": "Input",
-      "file_type": "code",
-      "source_file": "frontend/src/components/ui/input.tsx",
-      "source_location": "L8",
-      "_origin": "ast",
       "id": "ui_input_input",
       "community": 4,
-      "norm_label": "input"
+      "norm_label": "input()"
     },
     {
       "label": "label.tsx",
@@ -2160,24 +2300,14 @@
       "norm_label": "label.tsx"
     },
     {
-      "label": "labelVariants",
+      "label": "Label()",
       "file_type": "code",
       "source_file": "frontend/src/components/ui/label.tsx",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "ui_label_labelvariants",
-      "community": 4,
-      "norm_label": "labelvariants"
-    },
-    {
-      "label": "Label",
-      "file_type": "code",
-      "source_file": "frontend/src/components/ui/label.tsx",
-      "source_location": "L11",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "ui_label_label",
       "community": 4,
-      "norm_label": "label"
+      "norm_label": "label()"
     },
     {
       "label": "Crawler.tsx",
@@ -2268,6 +2398,56 @@
       "id": "widgets_filecrawler_filecrawler",
       "community": 0,
       "norm_label": "filecrawler()"
+    },
+    {
+      "label": "JobTerminal.tsx",
+      "file_type": "code",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "widgets_jobterminal",
+      "community": 0,
+      "norm_label": "jobterminal.tsx"
+    },
+    {
+      "label": "jobTimestamp()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "widgets_jobterminal_jobtimestamp",
+      "community": 0,
+      "norm_label": "jobtimestamp()"
+    },
+    {
+      "label": "selectTroubleshootingJob()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "widgets_jobterminal_selecttroubleshootingjob",
+      "community": 0,
+      "norm_label": "selecttroubleshootingjob()"
+    },
+    {
+      "label": "levelClass()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "widgets_jobterminal_levelclass",
+      "community": 0,
+      "norm_label": "levelclass()"
+    },
+    {
+      "label": "JobTerminal()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "widgets_jobterminal_jobterminal",
+      "community": 0,
+      "norm_label": "jobterminal()"
     },
     {
       "label": "Navbar.tsx",
@@ -2580,10 +2760,20 @@
       "norm_label": "payrollbatchstatus"
     },
     {
-      "label": "PayrollJob",
+      "label": "PayrollJobLog",
       "file_type": "code",
       "source_file": "frontend/src/features/payroll/api/payroll-types.ts",
       "source_location": "L39",
+      "_origin": "ast",
+      "id": "api_payroll_types_payrolljoblog",
+      "community": 0,
+      "norm_label": "payrolljoblog"
+    },
+    {
+      "label": "PayrollJob",
+      "file_type": "code",
+      "source_file": "frontend/src/features/payroll/api/payroll-types.ts",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "api_payroll_types_payrolljob",
       "community": 0,
@@ -2593,7 +2783,7 @@
       "label": "PayrollBatch",
       "file_type": "code",
       "source_file": "frontend/src/features/payroll/api/payroll-types.ts",
-      "source_location": "L57",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "api_payroll_types_payrollbatch",
       "community": 0,
@@ -2603,7 +2793,7 @@
       "label": "PayrollSessionSnapshot",
       "file_type": "code",
       "source_file": "frontend/src/features/payroll/api/payroll-types.ts",
-      "source_location": "L78",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "api_payroll_types_payrollsessionsnapshot",
       "community": 0,
@@ -2613,7 +2803,7 @@
       "label": "CreatePayrollBatchInput",
       "file_type": "code",
       "source_file": "frontend/src/features/payroll/api/payroll-types.ts",
-      "source_location": "L83",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "api_payroll_types_createpayrollbatchinput",
       "community": 0,
@@ -2818,16 +3008,6 @@
       "id": "src_vite_env_d",
       "community": 18,
       "norm_label": "vite-env.d.ts"
-    },
-    {
-      "label": "tailwind.config.js",
-      "file_type": "code",
-      "source_file": "frontend/tailwind.config.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "frontend_tailwind_config",
-      "community": 16,
-      "norm_label": "tailwind.config.js"
     },
     {
       "label": "tsconfig.json",
@@ -3310,10 +3490,20 @@
       "norm_label": "verifiche"
     },
     {
-      "label": "Deployment",
+      "label": "Componenti UI",
       "file_type": "document",
       "source_file": "frontend/README.md",
       "source_location": "L38",
+      "_origin": "ast",
+      "id": "frontend_readme_componenti_ui",
+      "community": 19,
+      "norm_label": "componenti ui"
+    },
+    {
+      "label": "Deployment",
+      "file_type": "document",
+      "source_file": "frontend/README.md",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_readme_deployment",
       "community": 19,
@@ -4522,6 +4712,16 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/nursind/crawler.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "nursind_crawler_payrollcrawler",
+      "target": "nursind_crawler_payrollcrawler_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/crawler.py",
       "source_location": "L85",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -4578,6 +4778,50 @@
       "confidence_score": 0.5,
       "source": "tests_test_crawler_session",
       "target": "nursind_crawler_payrollcrawler"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/test_crawler.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "tests_test_crawler_test_crawler_logs_safe_request_milestones",
+      "target": "nursind_crawler_payrollcrawler"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/crawler.py",
+      "source_location": "L136",
+      "weight": 1.0,
+      "source": "nursind_crawler_payrollcrawler_download",
+      "target": "nursind_crawler_payrollcrawler_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/crawler.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "nursind_crawler_payrollcrawler_login",
+      "target": "nursind_crawler_payrollcrawler_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/crawler.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "nursind_crawler_payrollcrawler_request",
+      "target": "nursind_crawler_payrollcrawler_log",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -4857,6 +5101,16 @@
       "confidence_score": 1.0,
       "source": "nursind_models",
       "target": "nursind_models_crawljob"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/models.py",
+      "source_location": "L166",
+      "weight": 1.0,
+      "source": "nursind_models",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5365,6 +5619,17 @@
       "target": "nursind_models_crawljob_to_dict"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/models.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "nursind_models_crawlbatch_to_dict",
+      "target": "nursind_models_crawljoblog_to_dict",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "backend/nursind/routes.py",
@@ -5546,6 +5811,89 @@
       "confidence_score": 0.5,
       "source": "tests_test_tasks_fakeredis",
       "target": "nursind_models_crawljob"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/models.py",
+      "source_location": "L162",
+      "weight": 1.0,
+      "source": "nursind_models_crawljob_to_dict",
+      "target": "nursind_models_crawljoblog_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L10",
+      "weight": 0.8,
+      "source": "backend_nursind_tasks_py_crawlsession",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L10",
+      "weight": 0.8,
+      "source": "backend_nursind_tasks_py_exception",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L10",
+      "weight": 0.8,
+      "source": "crawlbatch",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L10",
+      "weight": 0.8,
+      "source": "crawljob",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/models.py",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "nursind_models_crawljoblog",
+      "target": "nursind_models_crawljoblog_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "nursind_tasks",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "nursind_tasks_job_log",
+      "target": "nursind_models_crawljoblog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6251,6 +6599,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/nursind/tasks.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "nursind_tasks",
+      "target": "nursind_tasks_job_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/tasks.py",
       "source_location": "L67",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -6364,6 +6722,28 @@
       "confidence_score": 1.0,
       "source": "nursind_tasks_delete_session",
       "target": "nursind_tasks_delete_job_output"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "nursind_tasks_job_log",
+      "target": "crawljob",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/nursind/tasks.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "nursind_tasks_execute_crawl_batch",
+      "target": "nursind_tasks_job_log",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -6612,9 +6992,9 @@
       "source_file": "backend/tests/test_api.py",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_api",
-      "target": "tests_test_api_test_login_reuses_existing_session_for_username",
-      "confidence_score": 1.0
+      "target": "tests_test_api_test_login_reuses_existing_session_for_username"
     },
     {
       "relation": "contains",
@@ -6812,9 +7192,9 @@
       "source_file": "backend/tests/test_api.py",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_api_test_login_reuses_existing_session_for_username",
-      "target": "tests_test_api_create_session",
-      "confidence_score": 1.0
+      "target": "tests_test_api_create_session"
     },
     {
       "relation": "calls",
@@ -6856,6 +7236,16 @@
       "confidence_score": 1.0,
       "source": "tests_test_crawler",
       "target": "tests_test_crawler_session"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_crawler.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "tests_test_crawler",
+      "target": "tests_test_crawler_test_crawler_logs_safe_request_milestones",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6936,6 +7326,17 @@
       "confidence_score": 1.0,
       "source": "tests_test_crawler_session",
       "target": "tests_test_crawler_session_request"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_crawler.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "tests_test_crawler_test_crawler_logs_safe_request_milestones",
+      "target": "tests_test_crawler_session",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -7243,6 +7644,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/components.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_components",
+      "target": "frontend_components_iconlibrary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
       "source_location": "L4",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -7348,6 +7759,36 @@
       "confidence_score": 1.0,
       "source": "frontend_components_aliases",
       "target": "frontend_components_aliases_components"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_components_aliases",
+      "target": "frontend_components_aliases_hooks"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_components_aliases",
+      "target": "frontend_components_aliases_lib"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_components_aliases",
+      "target": "frontend_components_aliases_ui"
     },
     {
       "relation": "contains",
@@ -7573,21 +8014,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
-      "source_location": "L18",
+      "source_location": "L26",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_radix_ui_react_label"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/package.json",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_radix_ui_react_slot"
+      "target": "frontend_package_dependencies_radix_ui"
     },
     {
       "relation": "contains",
@@ -7627,7 +8058,27 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
+      "target": "frontend_package_dependencies_shadcn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/package.json",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_package_dependencies",
       "target": "frontend_package_dependencies_tailwind_merge"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_package_dependencies",
+      "target": "frontend_package_dependencies_tailwindcss_vite"
     },
     {
       "relation": "contains",
@@ -7643,11 +8094,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
-      "source_location": "L40",
+      "source_location": "L32",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_autoprefixer"
+      "source": "frontend_package_dependencies",
+      "target": "frontend_package_dependencies_tw_animate_css"
     },
     {
       "relation": "contains",
@@ -7678,16 +8129,6 @@
       "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
       "target": "frontend_package_devdependencies_eslint_plugin_react_refresh"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/package.json",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_postcss"
     },
     {
       "relation": "contains",
@@ -7783,11 +8224,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_vitejs_plugin_react_swc"
+      "target": "frontend_package_devdependencies_vitejs_plugin_react"
     },
     {
       "relation": "contains",
@@ -7967,6 +8408,94 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_cardaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_cardcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_carddescription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_cardfooter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_cardheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "ui_card_cardtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
       "source_location": "L5",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8027,6 +8556,17 @@
       "confidence_score": 1.0,
       "source": "pages_bustepaga",
       "target": "widgets_crawler"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/Pages/BustePaga.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "pages_bustepaga",
+      "target": "widgets_jobterminal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8256,16 +8796,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/ui/button.tsx",
-      "source_location": "L36",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_button",
-      "target": "ui_button_buttonprops"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/ui/button.tsx",
       "source_location": "L7",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8284,6 +8814,28 @@
       "target": "ui_button"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/button.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_button_button",
+      "target": "ui_button_buttonvariants"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/button.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "ui_button_button",
+      "target": "lib_utils_cn"
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -8293,6 +8845,175 @@
       "confidence_score": 1.0,
       "source": "widgets_crawler",
       "target": "ui_button_button"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_cardaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_cardcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_carddescription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_cardfooter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_cardheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "ui_card",
+      "target": "ui_card_cardtitle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "ui_card_card",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "ui_card_cardheader",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "ui_card_cardtitle",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "ui_card_carddescription",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "ui_card_cardaction",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "ui_card_cardcontent",
+      "target": "lib_utils_cn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/card.tsx",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "ui_card_cardfooter",
+      "target": "lib_utils_cn"
     },
     {
       "relation": "imports_from",
@@ -8327,16 +9048,6 @@
       "target": "ui_input_input"
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/ui/input.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_input",
-      "target": "ui_input_inputprops"
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -8346,6 +9057,17 @@
       "confidence_score": 1.0,
       "source": "widgets_crawler",
       "target": "ui_input"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/input.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "ui_input_input",
+      "target": "lib_utils_cn"
     },
     {
       "relation": "imports",
@@ -8391,14 +9113,15 @@
       "target": "ui_label_label"
     },
     {
-      "relation": "contains",
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/ui/label.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "ui_label",
-      "target": "ui_label_labelvariants"
+      "source_file": "frontend/src/components/ui/label.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "ui_label_label",
+      "target": "lib_utils_cn"
     },
     {
       "relation": "imports_from",
@@ -8733,6 +9456,79 @@
       "confidence_score": 1.0,
       "source": "widgets_filecrawler",
       "target": "widgets_filecrawler_labels"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "api_payroll_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "api_payroll_types_payrolljob",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "api_payroll_types_payrollsessionsnapshot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "widgets_jobterminal_jobterminal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "widgets_jobterminal_jobtimestamp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "widgets_jobterminal_levelclass",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/widgets/JobTerminal.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "widgets_jobterminal",
+      "target": "widgets_jobterminal_selecttroubleshootingjob",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9413,6 +10209,16 @@
       "confidence_score": 1.0,
       "source": "api_payroll_types",
       "target": "api_payroll_types_payrolljob"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/features/payroll/api/payroll-types.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "api_payroll_types",
+      "target": "api_payroll_types_payrolljoblog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10221,6 +11027,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/README.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_readme_workers_analyzer_app",
+      "target": "frontend_readme_componenti_ui"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/README.md",
       "source_location": "L37",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10873,5 +11689,5 @@
       "source_file": "compose.yml"
     }
   ],
-  "built_at_commit": "05b166e3478cdd651afa35c66a6ee6ebd2366461"
+  "built_at_commit": "fe1bccc8ec1533c4b96251b2e03e8dc774a3ac2c"
 }

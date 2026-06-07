@@ -7,8 +7,7 @@ from . import create_app
 from .credentials import CredentialStore
 from .crawler import TemporaryCrawlerError, crawler_from_config
 from .extensions import db
-from .models import CrawlBatch, CrawlJob, CrawlSession, utcnow
-from .redis_client import get_redis
+from .models import CrawlBatch, CrawlJob, CrawlJobLog, CrawlSession, utcnow
 
 
 def _sanitize_error(exc: Exception) -> str:
@@ -19,6 +18,19 @@ def _sanitize_error(exc: Exception) -> str:
 def _delete_job_output(job: CrawlJob) -> None:
     if job.output_path:
         Path(job.output_path).unlink(missing_ok=True)
+
+
+def _job_log(job: CrawlJob, message: str, level: str = "info") -> None:
+    db.session.add(
+        CrawlJobLog(
+            job_id=job.id,
+            level=level,
+            message=message[:1000],
+        )
+    )
+    if job.batch:
+        job.batch.bump()
+    db.session.commit()
 
 
 def delete_batch(batch: CrawlBatch) -> str:
@@ -71,119 +83,121 @@ def run_crawl_batch(batch_id: str) -> None:
 
 
 def execute_crawl_batch(batch_id: str) -> None:
-    redis = get_redis()
-    lock = redis.lock(
-        "crawl-global-lock",
-        timeout=current_app.config["BATCH_JOB_TIMEOUT_SECONDS"] + 60,
-    )
-    lock.acquire(blocking=True)
+    while True:
+        db.session.expire_all()
+        batch = db.session.get(CrawlBatch, batch_id)
+        if batch is None:
+            return
+        if _finish_requested_transition(batch):
+            return
+        if batch.status in {"blocked", "cancelled", "completed"}:
+            return
 
-    try:
-        while True:
-            db.session.expire_all()
-            batch = db.session.get(CrawlBatch, batch_id)
-            if batch is None:
-                return
-            if _finish_requested_transition(batch):
-                return
-            if batch.status in {"blocked", "cancelled", "completed"}:
-                return
-
-            job = next(
-                (
-                    item
-                    for item in batch.jobs
-                    if item.status not in {"completed", "cancelled", "expired"}
-                ),
-                None,
-            )
-            if job is None:
-                batch.status = "completed"
-                batch.error = None
-                batch.bump()
-                db.session.commit()
-                return
-
-            credentials = CredentialStore().get(batch.session_id)
-            if credentials is None:
-                job.status = "failed"
-                job.error = "Stored credentials are unavailable"
-                batch.status = "blocked"
-                batch.error = job.error
-                batch.bump()
-                db.session.commit()
-                return
-
-            batch.status = "running"
+        job = next(
+            (
+                item
+                for item in batch.jobs
+                if item.status not in {"completed", "cancelled", "expired"}
+            ),
+            None,
+        )
+        if job is None:
+            batch.status = "completed"
             batch.error = None
-            job.status = "running"
-            job.attempts += 1
-            job.started_at = utcnow()
-            job.error = None
             batch.bump()
             db.session.commit()
+            return
 
-            try:
-                crawler = crawler_from_config(current_app.config)
-                session = crawler.login(
-                    credentials["username"],
-                    credentials["password"],
-                )
-                try:
-                    content = crawler.download(
-                        session,
-                        job.year,
-                        job.month,
-                        credentials["username"],
-                    )
-                finally:
-                    session.close()
+        credentials = CredentialStore().get(batch.session_id)
+        if credentials is None:
+            job.status = "failed"
+            job.error = "Stored credentials are unavailable"
+            batch.status = "blocked"
+            batch.error = job.error
+            _job_log(job, job.error, "error")
+            batch.bump()
+            db.session.commit()
+            return
 
-                output_dir = Path(current_app.config["OUTPUT_DIR"])
-                output_dir.mkdir(parents=True, exist_ok=True)
-                final_path = output_dir / f"{job.id}.pdf"
-                temporary_path = output_dir / f"{job.id}.tmp"
-                temporary_path.write_bytes(content)
-                temporary_path.replace(final_path)
+        batch.status = "running"
+        batch.error = None
+        job.status = "running"
+        job.attempts += 1
+        job.started_at = utcnow()
+        job.error = None
+        batch.bump()
+        db.session.commit()
+        _job_log(
+            job,
+            f"Starting job for payroll period {job.year}-{job.month:02d} "
+            f"(attempt {job.attempts})",
+        )
 
-                now = utcnow()
-                job.status = "completed"
-                job.output_path = str(final_path)
-                job.completed_at = now
-                job.expires_at = now + timedelta(
-                    seconds=current_app.config["FILE_RETENTION_SECONDS"]
-                )
-                batch.bump()
-                db.session.commit()
-            except TemporaryCrawlerError as exc:
-                db.session.refresh(batch)
-                job.status = "queued"
-                job.error = _sanitize_error(exc)
-                batch.error = job.error
-                if batch.status not in {"cancel_requested", "delete_requested"}:
-                    batch.status = "queued"
-                batch.bump()
-                db.session.commit()
-                if batch.status in {"cancel_requested", "delete_requested"}:
-                    continue
-                raise
-            except Exception as exc:
-                db.session.refresh(batch)
-                job.status = "failed"
-                job.error = _sanitize_error(exc)
-                batch.error = job.error
-                if batch.status not in {"cancel_requested", "delete_requested"}:
-                    batch.status = "blocked"
-                batch.bump()
-                db.session.commit()
-                if batch.status in {"cancel_requested", "delete_requested"}:
-                    continue
-                return
-    finally:
         try:
-            lock.release()
-        except Exception:
-            pass
+            crawler = crawler_from_config(
+                current_app.config,
+                log_callback=lambda level, message: _job_log(
+                    job, message, level
+                ),
+            )
+            session = crawler.login(
+                credentials["username"],
+                credentials["password"],
+            )
+            try:
+                content = crawler.download(
+                    session,
+                    job.year,
+                    job.month,
+                    credentials["username"],
+                )
+            finally:
+                session.close()
+
+            output_dir = Path(current_app.config["OUTPUT_DIR"])
+            output_dir.mkdir(parents=True, exist_ok=True)
+            final_path = output_dir / f"{job.id}.pdf"
+            temporary_path = output_dir / f"{job.id}.tmp"
+            temporary_path.write_bytes(content)
+            temporary_path.replace(final_path)
+            _job_log(job, "Saved PDF to temporary payroll storage")
+
+            now = utcnow()
+            job.status = "completed"
+            job.output_path = str(final_path)
+            job.completed_at = now
+            job.expires_at = now + timedelta(
+                seconds=current_app.config["FILE_RETENTION_SECONDS"]
+            )
+            batch.bump()
+            db.session.commit()
+            _job_log(job, "Job completed successfully")
+        except TemporaryCrawlerError as exc:
+            db.session.refresh(batch)
+            job.status = "queued"
+            job.error = _sanitize_error(exc)
+            batch.error = job.error
+            if batch.status not in {"cancel_requested", "delete_requested"}:
+                batch.status = "queued"
+            batch.bump()
+            db.session.commit()
+            _job_log(job, f"Temporary failure: {job.error}", "warning")
+            if batch.status in {"cancel_requested", "delete_requested"}:
+                continue
+            raise
+        except Exception as exc:
+            db.session.refresh(batch)
+            job.status = "failed"
+            job.error = _sanitize_error(exc)
+            batch.error = job.error
+            if batch.status not in {"cancel_requested", "delete_requested"}:
+                batch.status = "blocked"
+            batch.bump()
+            db.session.commit()
+            _job_log(job, f"Job failed: {job.error}", "error")
+            if batch.status in {"cancel_requested", "delete_requested"}:
+                continue
+            return
 
 
 def handle_batch_failure(rq_job, _connection, _type, value, _traceback):

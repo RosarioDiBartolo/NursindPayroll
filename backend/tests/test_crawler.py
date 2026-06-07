@@ -32,6 +32,31 @@ def crawler():
     )
 
 
+def test_crawler_logs_safe_request_milestones():
+    entries = []
+    instance = PayrollCrawler(
+        "https://portal.test",
+        "test@example.invalid",
+        False,
+        1,
+        1,
+        0,
+        log_callback=lambda level, message: entries.append((level, message)),
+    )
+    session = Session([Response()])
+
+    instance._request(
+        session,
+        "POST",
+        "/safe-path",
+        data={"j_password": "do-not-log"},
+    )
+
+    messages = " ".join(message for _, message in entries)
+    assert "POST /safe-path" in messages
+    assert "do-not-log" not in messages
+
+
 def test_period_has_no_year_limit():
     crawler().validate_period(2000, 1)
     crawler().validate_period(3000, 12)

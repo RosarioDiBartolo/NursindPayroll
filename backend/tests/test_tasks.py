@@ -30,28 +30,13 @@ class FakeCrawler:
         return b"%PDF-1.7\ncontent"
 
 
-class FakeLock:
-    def acquire(self, blocking=False):
-        return True
-
-    def release(self):
-        pass
-
-
-class FakeRedis:
-    def lock(self, *_args, **_kwargs):
-        return FakeLock()
-
-
 def test_worker_completes_batch_in_month_order(app, monkeypatch):
     FakeCrawler.calls = []
     monkeypatch.setattr("nursind.tasks.CredentialStore", FakeCredentialStore)
     monkeypatch.setattr(
         "nursind.tasks.crawler_from_config",
-        lambda _config: FakeCrawler(),
+        lambda _config, log_callback=None: FakeCrawler(),
     )
-    monkeypatch.setattr("nursind.tasks.get_redis", lambda: FakeRedis())
-
     with app.app_context():
         session = CrawlSession(username="user")
         batch = CrawlBatch(
@@ -85,6 +70,8 @@ def test_worker_completes_batch_in_month_order(app, monkeypatch):
         assert completed.status == "completed"
         assert [job.status for job in completed.jobs] == ["completed", "completed"]
         assert FakeCrawler.calls == [(2019, 1), (2019, 2)]
+        assert "Starting job" in completed.jobs[0].logs[0].message
+        assert completed.jobs[0].logs[-1].message == "Job completed successfully"
 
 
 def test_worker_blocks_batch_and_does_not_start_next_month(app, monkeypatch):
@@ -97,10 +84,8 @@ def test_worker_blocks_batch_and_does_not_start_next_month(app, monkeypatch):
     monkeypatch.setattr("nursind.tasks.CredentialStore", FakeCredentialStore)
     monkeypatch.setattr(
         "nursind.tasks.crawler_from_config",
-        lambda _config: FailingCrawler(),
+        lambda _config, log_callback=None: FailingCrawler(),
     )
-    monkeypatch.setattr("nursind.tasks.get_redis", lambda: FakeRedis())
-
     with app.app_context():
         session = CrawlSession(username="user")
         batch = CrawlBatch(
@@ -133,3 +118,5 @@ def test_worker_blocks_batch_and_does_not_start_next_month(app, monkeypatch):
         assert batch.status == "blocked"
         assert [job.status for job in batch.jobs] == ["failed", "pending"]
         assert FailingCrawler.calls == [(2019, 1)]
+        assert batch.jobs[0].logs[-1].level == "error"
+        assert "portal rejected request" in batch.jobs[0].logs[-1].message

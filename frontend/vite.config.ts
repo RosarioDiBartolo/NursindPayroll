@@ -1,22 +1,24 @@
-import { defineConfig  } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 
-// https://vitejs.dev/config/
-export default defineConfig(( ) => {
-  // Load environment variables
- 
-  return {
-    plugins: [react()],
-    server: {
-      host: '0.0.0.0', // Bind to all network interfaces
-      port: 2000,
-     
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    host: '0.0.0.0',
+    port: 2000,
+    proxy: {
+    "/api": {
+      target: "http://127.0.0.1:8080",
+      changeOrigin: true,
     },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
+  },
+  },
+
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
-  };
+  },
 });

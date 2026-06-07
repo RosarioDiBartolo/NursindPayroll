@@ -176,7 +176,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "nursind_crawler_temporarycrawlererror",
-      "community": 6,
+      "community": 9,
       "norm_label": "temporarycrawlererror"
     },
     {
@@ -256,7 +256,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "nursind_crawler_crawler_from_config",
-      "community": 6,
+      "community": 1,
       "norm_label": "crawler_from_config()"
     },
     {
@@ -306,7 +306,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "nursind_maintenance",
-      "community": 1,
+      "community": 9,
       "norm_label": "maintenance.py"
     },
     {
@@ -316,7 +316,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "nursind_maintenance_cleanup_once",
-      "community": 1,
+      "community": 9,
       "norm_label": "cleanup_once()"
     },
     {
@@ -326,7 +326,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "nursind_maintenance_main",
-      "community": 1,
+      "community": 9,
       "norm_label": "main()"
     },
     {
@@ -336,7 +336,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "nursind_models",
-      "community": 1,
+      "community": 9,
       "norm_label": "models.py"
     },
     {
@@ -346,7 +346,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "nursind_models_utcnow",
-      "community": 1,
+      "community": 9,
       "norm_label": "utcnow()"
     },
     {
@@ -356,7 +356,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "nursind_models_crawlsession",
-      "community": 1,
+      "community": 9,
       "norm_label": "crawlsession"
     },
     {
@@ -366,7 +366,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "nursind_models_crawlsession_to_summary",
-      "community": 1,
+      "community": 9,
       "norm_label": ".to_summary()"
     },
     {
@@ -376,7 +376,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "nursind_models_crawlbatch",
-      "community": 1,
+      "community": 9,
       "norm_label": "crawlbatch"
     },
     {
@@ -386,7 +386,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "nursind_models_crawlbatch_bump",
-      "community": 1,
+      "community": 9,
       "norm_label": ".bump()"
     },
     {
@@ -396,7 +396,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "nursind_models_crawlbatch_to_dict",
-      "community": 1,
+      "community": 9,
       "norm_label": ".to_dict()"
     },
     {
@@ -406,7 +406,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "nursind_models_crawljob",
-      "community": 1,
+      "community": 9,
       "norm_label": "crawljob"
     },
     {
@@ -416,7 +416,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "nursind_models_crawljob_to_dict",
-      "community": 1,
+      "community": 9,
       "norm_label": ".to_dict()"
     },
     {
@@ -426,7 +426,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "nursind_redis_client",
-      "community": 23,
+      "community": 1,
       "norm_label": "redis_client.py"
     },
     {
@@ -436,7 +436,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "nursind_redis_client_get_redis",
-      "community": 23,
+      "community": 1,
       "norm_label": "get_redis()"
     },
     {
@@ -446,7 +446,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "redis",
-      "community": 23,
+      "community": 1,
       "norm_label": "redis"
     },
     {
@@ -456,7 +456,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "nursind_routes",
-      "community": 23,
+      "community": 1,
       "norm_label": "routes.py"
     },
     {
@@ -466,7 +466,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "nursind_routes_error",
-      "community": 23,
+      "community": 1,
       "norm_label": "error()"
     },
     {
@@ -476,7 +476,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "nursind_routes_month_index",
-      "community": 23,
+      "community": 1,
       "norm_label": "month_index()"
     },
     {
@@ -486,7 +486,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "nursind_routes_parse_month_range",
-      "community": 23,
+      "community": 1,
       "norm_label": "parse_month_range()"
     },
     {
@@ -496,7 +496,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "nursind_routes_iter_periods",
-      "community": 23,
+      "community": 1,
       "norm_label": "iter_periods()"
     },
     {
@@ -506,7 +506,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "nursind_routes_enqueue_batch",
-      "community": 23,
+      "community": 1,
       "norm_label": "enqueue_batch()"
     },
     {
@@ -516,7 +516,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "nursind_routes_session_snapshot",
-      "community": 23,
+      "community": 1,
       "norm_label": "session_snapshot()"
     },
     {
@@ -526,7 +526,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "backend_nursind_routes_py_crawlsession",
-      "community": 23,
+      "community": 9,
       "norm_label": "crawlsession"
     },
     {
@@ -536,7 +536,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "nursind_routes_maybe_finish_session_delete",
-      "community": 23,
+      "community": 1,
       "norm_label": "maybe_finish_session_delete()"
     },
     {
@@ -546,24 +546,24 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "nursind_routes_create_crawl_session",
-      "community": 23,
+      "community": 1,
       "norm_label": "create_crawl_session()"
     },
     {
       "label": "get_crawl_session()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L132",
+      "source_location": "L140",
       "_origin": "ast",
       "id": "nursind_routes_get_crawl_session",
-      "community": 23,
+      "community": 1,
       "norm_label": "get_crawl_session()"
     },
     {
       "label": "delete_crawl_session()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L140",
+      "source_location": "L148",
       "_origin": "ast",
       "id": "nursind_routes_delete_crawl_session",
       "community": 1,
@@ -573,80 +573,80 @@
       "label": "create_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L166",
+      "source_location": "L174",
       "_origin": "ast",
       "id": "nursind_routes_create_crawl_batch",
-      "community": 23,
+      "community": 1,
       "norm_label": "create_crawl_batch()"
     },
     {
       "label": "get_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L216",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "nursind_routes_get_crawl_batch",
-      "community": 23,
+      "community": 1,
       "norm_label": "get_crawl_batch()"
     },
     {
       "label": "retry_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L224",
+      "source_location": "L232",
       "_origin": "ast",
       "id": "nursind_routes_retry_crawl_batch",
-      "community": 23,
+      "community": 1,
       "norm_label": "retry_crawl_batch()"
     },
     {
       "label": "cancel_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L254",
+      "source_location": "L262",
       "_origin": "ast",
       "id": "nursind_routes_cancel_crawl_batch",
-      "community": 23,
+      "community": 1,
       "norm_label": "cancel_crawl_batch()"
     },
     {
       "label": "delete_crawl_batch()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L275",
+      "source_location": "L283",
       "_origin": "ast",
       "id": "nursind_routes_delete_crawl_batch",
-      "community": 23,
+      "community": 1,
       "norm_label": "delete_crawl_batch()"
     },
     {
       "label": "crawl_session_events()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L292",
+      "source_location": "L300",
       "_origin": "ast",
       "id": "nursind_routes_crawl_session_events",
-      "community": 23,
+      "community": 1,
       "norm_label": "crawl_session_events()"
     },
     {
       "label": "download_crawl_job()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L321",
+      "source_location": "L329",
       "_origin": "ast",
       "id": "nursind_routes_download_crawl_job",
-      "community": 23,
+      "community": 1,
       "norm_label": "download_crawl_job()"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "backend/nursind/routes.py",
-      "source_location": "L349",
+      "source_location": "L357",
       "_origin": "ast",
       "id": "nursind_routes_health",
-      "community": 23,
+      "community": 1,
       "norm_label": "health()"
     },
     {
@@ -676,7 +676,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "backend_nursind_tasks_py_exception",
-      "community": 6,
+      "community": 9,
       "norm_label": "exception"
     },
     {
@@ -696,7 +696,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "crawljob",
-      "community": 1,
+      "community": 9,
       "norm_label": "crawljob"
     },
     {
@@ -716,7 +716,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "crawlbatch",
-      "community": 1,
+      "community": 9,
       "norm_label": "crawlbatch"
     },
     {
@@ -736,7 +736,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "backend_nursind_tasks_py_crawlsession",
-      "community": 1,
+      "community": 9,
       "norm_label": "crawlsession"
     },
     {
@@ -806,7 +806,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_conftest",
-      "community": 12,
+      "community": 1,
       "norm_label": "conftest.py"
     },
     {
@@ -816,7 +816,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "tests_conftest_testconfig",
-      "community": 12,
+      "community": 1,
       "norm_label": "testconfig"
     },
     {
@@ -826,7 +826,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "tests_conftest_app",
-      "community": 12,
+      "community": 1,
       "norm_label": "app()"
     },
     {
@@ -836,7 +836,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "tests_conftest_client",
-      "community": 12,
+      "community": 1,
       "norm_label": "client()"
     },
     {
@@ -946,7 +946,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "tests_test_api_fakequeue",
-      "community": 1,
+      "community": 9,
       "norm_label": "fakequeue"
     },
     {
@@ -956,7 +956,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "tests_test_api_fakequeue_init",
-      "community": 1,
+      "community": 9,
       "norm_label": ".__init__()"
     },
     {
@@ -966,7 +966,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "tests_test_api_fakequeue_enqueue",
-      "community": 1,
+      "community": 9,
       "norm_label": ".enqueue()"
     },
     {
@@ -1000,10 +1000,20 @@
       "norm_label": "test_create_session_and_explicit_month_range()"
     },
     {
-      "label": "test_batch_delete_removes_jobs_and_files()",
+      "label": "test_login_reuses_existing_session_for_username()",
       "file_type": "code",
       "source_file": "backend/tests/test_api.py",
       "source_location": "L104",
+      "_origin": "ast",
+      "id": "tests_test_api_test_login_reuses_existing_session_for_username",
+      "community": 9,
+      "norm_label": "test_login_reuses_existing_session_for_username()"
+    },
+    {
+      "label": "test_batch_delete_removes_jobs_and_files()",
+      "file_type": "code",
+      "source_file": "backend/tests/test_api.py",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "tests_test_api_test_batch_delete_removes_jobs_and_files",
       "community": 9,
@@ -1013,7 +1023,7 @@
       "label": "test_session_delete_cascades_batches()",
       "file_type": "code",
       "source_file": "backend/tests/test_api.py",
-      "source_location": "L139",
+      "source_location": "L154",
       "_origin": "ast",
       "id": "tests_test_api_test_session_delete_cascades_batches",
       "community": 9,
@@ -1023,7 +1033,7 @@
       "label": "test_download_rejects_expired_output()",
       "file_type": "code",
       "source_file": "backend/tests/test_api.py",
-      "source_location": "L158",
+      "source_location": "L173",
       "_origin": "ast",
       "id": "tests_test_api_test_download_rejects_expired_output",
       "community": 9,
@@ -1156,7 +1166,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_tasks",
-      "community": 1,
+      "community": 9,
       "norm_label": "test_tasks.py"
     },
     {
@@ -1166,7 +1176,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore",
-      "community": 1,
+      "community": 9,
       "norm_label": "fakecredentialstore"
     },
     {
@@ -1176,7 +1186,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore_init",
-      "community": 1,
+      "community": 9,
       "norm_label": ".__init__()"
     },
     {
@@ -1186,7 +1196,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore_get",
-      "community": 1,
+      "community": 9,
       "norm_label": ".get()"
     },
     {
@@ -1196,7 +1206,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecredentialstore_delete",
-      "community": 1,
+      "community": 9,
       "norm_label": ".delete()"
     },
     {
@@ -1206,7 +1216,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeportalsession",
-      "community": 1,
+      "community": 9,
       "norm_label": "fakeportalsession"
     },
     {
@@ -1216,7 +1226,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeportalsession_close",
-      "community": 1,
+      "community": 9,
       "norm_label": ".close()"
     },
     {
@@ -1226,7 +1236,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecrawler",
-      "community": 1,
+      "community": 9,
       "norm_label": "fakecrawler"
     },
     {
@@ -1236,7 +1246,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecrawler_login",
-      "community": 1,
+      "community": 9,
       "norm_label": ".login()"
     },
     {
@@ -1246,7 +1256,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "tests_test_tasks_fakecrawler_download",
-      "community": 1,
+      "community": 9,
       "norm_label": ".download()"
     },
     {
@@ -1256,7 +1266,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "tests_test_tasks_fakelock",
-      "community": 1,
+      "community": 9,
       "norm_label": "fakelock"
     },
     {
@@ -1266,7 +1276,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tests_test_tasks_fakelock_acquire",
-      "community": 1,
+      "community": 9,
       "norm_label": ".acquire()"
     },
     {
@@ -1276,7 +1286,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "tests_test_tasks_fakelock_release",
-      "community": 1,
+      "community": 9,
       "norm_label": ".release()"
     },
     {
@@ -1286,7 +1296,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeredis",
-      "community": 1,
+      "community": 9,
       "norm_label": "fakeredis"
     },
     {
@@ -1296,7 +1306,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "tests_test_tasks_fakeredis_lock",
-      "community": 1,
+      "community": 9,
       "norm_label": ".lock()"
     },
     {
@@ -1306,7 +1316,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "tests_test_tasks_test_worker_completes_batch_in_month_order",
-      "community": 1,
+      "community": 9,
       "norm_label": "test_worker_completes_batch_in_month_order()"
     },
     {
@@ -1316,7 +1326,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "tests_test_tasks_test_worker_blocks_batch_and_does_not_start_next_month",
-      "community": 1,
+      "community": 9,
       "norm_label": "test_worker_blocks_batch_and_does_not_start_next_month()"
     },
     {
@@ -1326,7 +1336,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_worker",
-      "community": 23,
+      "community": 1,
       "norm_label": "worker.py"
     },
     {
@@ -1450,10 +1460,20 @@
       "norm_label": "prefix"
     },
     {
-      "label": "aliases",
+      "label": "iconLibrary",
       "file_type": "code",
       "source_file": "frontend/components.json",
       "source_location": "L13",
+      "_origin": "ast",
+      "id": "frontend_components_iconlibrary",
+      "community": 7,
+      "norm_label": "iconlibrary"
+    },
+    {
+      "label": "aliases",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_components_aliases",
       "community": 7,
@@ -1463,7 +1483,7 @@
       "label": "components",
       "file_type": "code",
       "source_file": "frontend/components.json",
-      "source_location": "L14",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_components_aliases_components",
       "community": 7,
@@ -1473,11 +1493,41 @@
       "label": "utils",
       "file_type": "code",
       "source_file": "frontend/components.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "frontend_components_aliases_utils",
       "community": 7,
       "norm_label": "utils"
+    },
+    {
+      "label": "ui",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "frontend_components_aliases_ui",
+      "community": 7,
+      "norm_label": "ui"
+    },
+    {
+      "label": "lib",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "frontend_components_aliases_lib",
+      "community": 7,
+      "norm_label": "lib"
+    },
+    {
+      "label": "hooks",
+      "file_type": "code",
+      "source_file": "frontend/components.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "frontend_components_aliases_hooks",
+      "community": 7,
+      "norm_label": "hooks"
     },
     {
       "label": "package.json",
@@ -1630,30 +1680,20 @@
       "norm_label": "dependencies"
     },
     {
-      "label": "@radix-ui/react-label",
+      "label": "@tailwindcss/vite",
       "file_type": "code",
       "source_file": "frontend/package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "frontend_package_dependencies_radix_ui_react_label",
+      "id": "frontend_package_dependencies_tailwindcss_vite",
       "community": 8,
-      "norm_label": "@radix-ui/react-label"
-    },
-    {
-      "label": "@radix-ui/react-slot",
-      "file_type": "code",
-      "source_file": "frontend/package.json",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "frontend_package_dependencies_radix_ui_react_slot",
-      "community": 8,
-      "norm_label": "@radix-ui/react-slot"
+      "norm_label": "@tailwindcss/vite"
     },
     {
       "label": "@tanstack/react-query",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L20",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_package_dependencies_tanstack_react_query",
       "community": 8,
@@ -1663,7 +1703,7 @@
       "label": "axios",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L21",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "frontend_package_dependencies_axios",
       "community": 8,
@@ -1673,7 +1713,7 @@
       "label": "class-variance-authority",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L22",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_package_dependencies_class_variance_authority",
       "community": 8,
@@ -1683,7 +1723,7 @@
       "label": "clsx",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L23",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_package_dependencies_clsx",
       "community": 8,
@@ -1693,7 +1733,7 @@
       "label": "file-saver",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L24",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_package_dependencies_file_saver",
       "community": 8,
@@ -1703,7 +1743,7 @@
       "label": "jszip",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L25",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_package_dependencies_jszip",
       "community": 8,
@@ -1713,11 +1753,21 @@
       "label": "lucide-react",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L26",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_package_dependencies_lucide_react",
       "community": 8,
       "norm_label": "lucide-react"
+    },
+    {
+      "label": "radix-ui",
+      "file_type": "code",
+      "source_file": "frontend/package.json",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "frontend_package_dependencies_radix_ui",
+      "community": 8,
+      "norm_label": "radix-ui"
     },
     {
       "label": "react",
@@ -1750,20 +1800,40 @@
       "norm_label": "react-icons"
     },
     {
-      "label": "tailwind-merge",
+      "label": "shadcn",
       "file_type": "code",
       "source_file": "frontend/package.json",
       "source_location": "L30",
+      "_origin": "ast",
+      "id": "frontend_package_dependencies_shadcn",
+      "community": 8,
+      "norm_label": "shadcn"
+    },
+    {
+      "label": "tailwind-merge",
+      "file_type": "code",
+      "source_file": "frontend/package.json",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_package_dependencies_tailwind_merge",
       "community": 8,
       "norm_label": "tailwind-merge"
     },
     {
-      "label": "devDependencies",
+      "label": "tw-animate-css",
       "file_type": "code",
       "source_file": "frontend/package.json",
       "source_location": "L32",
+      "_origin": "ast",
+      "id": "frontend_package_dependencies_tw_animate_css",
+      "community": 8,
+      "norm_label": "tw-animate-css"
+    },
+    {
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "frontend/package.json",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "frontend_package_devdependencies",
       "community": 3,
@@ -1773,7 +1843,7 @@
       "label": "@types/file-saver",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L33",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_file_saver",
       "community": 3,
@@ -1783,7 +1853,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L34",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_node",
       "community": 3,
@@ -1793,7 +1863,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L35",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_react",
       "community": 3,
@@ -1803,7 +1873,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_react_dom",
       "community": 3,
@@ -1813,7 +1883,7 @@
       "label": "@typescript-eslint/eslint-plugin",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_typescript_eslint_eslint_plugin",
       "community": 3,
@@ -1823,37 +1893,27 @@
       "label": "@typescript-eslint/parser",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_typescript_eslint_parser",
       "community": 3,
       "norm_label": "@typescript-eslint/parser"
     },
     {
-      "label": "@vitejs/plugin-react-swc",
+      "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "frontend_package_devdependencies_vitejs_plugin_react_swc",
+      "id": "frontend_package_devdependencies_vitejs_plugin_react",
       "community": 3,
-      "norm_label": "@vitejs/plugin-react-swc"
-    },
-    {
-      "label": "autoprefixer",
-      "file_type": "code",
-      "source_file": "frontend/package.json",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "frontend_package_devdependencies_autoprefixer",
-      "community": 3,
-      "norm_label": "autoprefixer"
+      "norm_label": "@vitejs/plugin-react"
     },
     {
       "label": "eslint",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_eslint",
       "community": 3,
@@ -1863,7 +1923,7 @@
       "label": "eslint-plugin-react-hooks",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_eslint_plugin_react_hooks",
       "community": 3,
@@ -1873,21 +1933,11 @@
       "label": "eslint-plugin-react-refresh",
       "file_type": "code",
       "source_file": "frontend/package.json",
-      "source_location": "L43",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_eslint_plugin_react_refresh",
       "community": 3,
       "norm_label": "eslint-plugin-react-refresh"
-    },
-    {
-      "label": "postcss",
-      "file_type": "code",
-      "source_file": "frontend/package.json",
-      "source_location": "L44",
-      "_origin": "ast",
-      "id": "frontend_package_devdependencies_postcss",
-      "community": 3,
-      "norm_label": "postcss"
     },
     {
       "label": "tailwindcss",
@@ -1928,16 +1978,6 @@
       "id": "frontend_package_devdependencies_vitest",
       "community": 3,
       "norm_label": "vitest"
-    },
-    {
-      "label": "postcss.config.js",
-      "file_type": "code",
-      "source_file": "frontend/postcss.config.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "frontend_postcss_config",
-      "community": 15,
-      "norm_label": "postcss.config.js"
     },
     {
       "label": "App.tsx",
@@ -2090,24 +2130,14 @@
       "norm_label": "buttonvariants"
     },
     {
-      "label": "ButtonProps",
+      "label": "Button()",
       "file_type": "code",
       "source_file": "frontend/src/components/ui/button.tsx",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "ui_button_buttonprops",
-      "community": 4,
-      "norm_label": "buttonprops"
-    },
-    {
-      "label": "Button",
-      "file_type": "code",
-      "source_file": "frontend/src/components/ui/button.tsx",
-      "source_location": "L42",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "ui_button_button",
       "community": 4,
-      "norm_label": "button"
+      "norm_label": "button()"
     },
     {
       "label": "input.tsx",
@@ -2120,24 +2150,14 @@
       "norm_label": "input.tsx"
     },
     {
-      "label": "InputProps",
+      "label": "Input()",
       "file_type": "code",
       "source_file": "frontend/src/components/ui/input.tsx",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "ui_input_inputprops",
-      "community": 4,
-      "norm_label": "inputprops"
-    },
-    {
-      "label": "Input",
-      "file_type": "code",
-      "source_file": "frontend/src/components/ui/input.tsx",
-      "source_location": "L8",
-      "_origin": "ast",
       "id": "ui_input_input",
       "community": 4,
-      "norm_label": "input"
+      "norm_label": "input()"
     },
     {
       "label": "label.tsx",
@@ -2150,24 +2170,14 @@
       "norm_label": "label.tsx"
     },
     {
-      "label": "labelVariants",
+      "label": "Label()",
       "file_type": "code",
       "source_file": "frontend/src/components/ui/label.tsx",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "ui_label_labelvariants",
-      "community": 4,
-      "norm_label": "labelvariants"
-    },
-    {
-      "label": "Label",
-      "file_type": "code",
-      "source_file": "frontend/src/components/ui/label.tsx",
-      "source_location": "L11",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "ui_label_label",
       "community": 4,
-      "norm_label": "label"
+      "norm_label": "label()"
     },
     {
       "label": "Crawler.tsx",
@@ -2810,16 +2820,6 @@
       "norm_label": "vite-env.d.ts"
     },
     {
-      "label": "tailwind.config.js",
-      "file_type": "code",
-      "source_file": "frontend/tailwind.config.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "frontend_tailwind_config",
-      "community": 16,
-      "norm_label": "tailwind.config.js"
-    },
-    {
       "label": "tsconfig.json",
       "file_type": "code",
       "source_file": "frontend/tsconfig.json",
@@ -3213,7 +3213,7 @@
       "label": "Sviluppo senza Docker",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L63",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "readme_sviluppo_senza_docker",
       "community": 2,
@@ -3293,17 +3293,27 @@
       "label": "Verifiche",
       "file_type": "document",
       "source_file": "frontend/README.md",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_readme_verifiche",
       "community": 19,
       "norm_label": "verifiche"
     },
     {
+      "label": "Componenti UI",
+      "file_type": "document",
+      "source_file": "frontend/README.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "frontend_readme_componenti_ui",
+      "community": 19,
+      "norm_label": "componenti ui"
+    },
+    {
       "label": "Deployment",
       "file_type": "document",
       "source_file": "frontend/README.md",
-      "source_location": "L37",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_readme_deployment",
       "community": 19,
@@ -4932,6 +4942,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "nursind_routes",
+      "target": "nursind_models_utcnow"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/nursind/routes.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "nursind_routes_create_crawl_session",
       "target": "nursind_models_utcnow"
     },
     {
@@ -6589,6 +6610,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_api.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_api",
+      "target": "tests_test_api_test_login_reuses_existing_session_for_username"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_api.py",
       "source_location": "L140",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -6779,6 +6810,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_api.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_api_test_login_reuses_existing_session_for_username",
+      "target": "tests_test_api_create_session"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_api.py",
       "source_location": "L141",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -6841,9 +6883,9 @@
       "source_file": "backend/tests/test_crawler.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_crawler",
-      "target": "tests_test_crawler_test_period_has_no_year_limit",
-      "confidence_score": 1.0
+      "target": "tests_test_crawler_test_period_has_no_year_limit"
     },
     {
       "relation": "contains",
@@ -6851,9 +6893,9 @@
       "source_file": "backend/tests/test_crawler.py",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_crawler",
-      "target": "tests_test_crawler_test_rejects_invalid_month",
-      "confidence_score": 1.0
+      "target": "tests_test_crawler_test_rejects_invalid_month"
     },
     {
       "relation": "method",
@@ -6946,9 +6988,9 @@
       "source_file": "backend/tests/test_crawler.py",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_crawler_test_period_has_no_year_limit",
-      "target": "tests_test_crawler_crawler",
-      "confidence_score": 1.0
+      "target": "tests_test_crawler_crawler"
     },
     {
       "relation": "calls",
@@ -6957,9 +6999,9 @@
       "source_file": "backend/tests/test_crawler.py",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_crawler_test_rejects_invalid_month",
-      "target": "tests_test_crawler_crawler",
-      "confidence_score": 1.0
+      "target": "tests_test_crawler_crawler"
     },
     {
       "relation": "contains",
@@ -7201,6 +7243,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/components.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "frontend_components",
+      "target": "frontend_components_iconlibrary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
       "source_location": "L4",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -7306,6 +7358,36 @@
       "confidence_score": 1.0,
       "source": "frontend_components_aliases",
       "target": "frontend_components_aliases_components"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "frontend_components_aliases",
+      "target": "frontend_components_aliases_hooks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "frontend_components_aliases",
+      "target": "frontend_components_aliases_lib",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/components.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "frontend_components_aliases",
+      "target": "frontend_components_aliases_ui",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7531,21 +7613,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
-      "source_location": "L18",
+      "source_location": "L26",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_radix_ui_react_label"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/package.json",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_radix_ui_react_slot"
+      "target": "frontend_package_dependencies_radix_ui",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7583,9 +7655,29 @@
       "source_file": "frontend/package.json",
       "source_location": "L30",
       "weight": 1.0,
+      "source": "frontend_package_dependencies",
+      "target": "frontend_package_dependencies_shadcn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/package.json",
+      "source_location": "L30",
+      "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
       "target": "frontend_package_dependencies_tailwind_merge"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "frontend_package_dependencies",
+      "target": "frontend_package_dependencies_tailwindcss_vite",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7601,11 +7693,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
-      "source_location": "L40",
+      "source_location": "L32",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_autoprefixer"
+      "source": "frontend_package_dependencies",
+      "target": "frontend_package_dependencies_tw_animate_css",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7636,16 +7728,6 @@
       "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
       "target": "frontend_package_devdependencies_eslint_plugin_react_refresh"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/package.json",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_postcss"
     },
     {
       "relation": "contains",
@@ -7741,11 +7823,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_vitejs_plugin_react_swc"
+      "target": "frontend_package_devdependencies_vitejs_plugin_react",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -8214,16 +8296,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/ui/button.tsx",
-      "source_location": "L36",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_button",
-      "target": "ui_button_buttonprops"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/ui/button.tsx",
       "source_location": "L7",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8240,6 +8312,28 @@
       "confidence_score": 1.0,
       "source": "widgets_crawler",
       "target": "ui_button"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/ui/button.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "ui_button_button",
+      "target": "ui_button_buttonvariants",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/button.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "ui_button_button",
+      "target": "lib_utils_cn"
     },
     {
       "relation": "imports",
@@ -8285,16 +8379,6 @@
       "target": "ui_input_input"
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/ui/input.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_input",
-      "target": "ui_input_inputprops"
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -8304,6 +8388,17 @@
       "confidence_score": 1.0,
       "source": "widgets_crawler",
       "target": "ui_input"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/components/ui/input.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "ui_input_input",
+      "target": "lib_utils_cn"
     },
     {
       "relation": "imports",
@@ -8349,14 +8444,15 @@
       "target": "ui_label_label"
     },
     {
-      "relation": "contains",
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/ui/label.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "ui_label",
-      "target": "ui_label_labelvariants"
+      "source_file": "frontend/src/components/ui/label.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "ui_label_label",
+      "target": "lib_utils_cn"
     },
     {
       "relation": "imports_from",
@@ -10179,6 +10275,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/README.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "frontend_readme_workers_analyzer_app",
+      "target": "frontend_readme_componenti_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/README.md",
       "source_location": "L37",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10831,5 +10937,5 @@
       "source_file": "compose.yml"
     }
   ],
-  "built_at_commit": "05b166e3478cdd651afa35c66a6ee6ebd2366461"
+  "built_at_commit": "fe1bccc8ec1533c4b96251b2e03e8dc774a3ac2c"
 }

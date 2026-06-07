@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Crawler from "@/components/widgets/Crawler";
+import JobTerminal from "@/components/widgets/JobTerminal";
 import Navbar from "@/components/widgets/Navbar";
 import { getPayrollSession } from "@/features/payroll/api/payroll-api";
 import type { PayrollSessionSnapshot } from "@/features/payroll/api/payroll-types";
@@ -14,6 +15,7 @@ import {
   useDeletePayrollSession,
 } from "@/features/payroll/query/payroll-hooks";
 import { baseURL, cn } from "@/lib/utils";
+import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@/components/ui/card";
 
 const SESSION_STORAGE_KEY = "nursind-payroll-session-id";
 
@@ -125,95 +127,131 @@ function BustePaga() {
       : undefined);
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className=" bg-stone-50 ">
       <Navbar />
-      <main className="mx-auto grid max-w-6xl gap-6 p-6 lg:grid-cols-[20rem_1fr]">
-        <section
-          className={cn(
-            "rounded-lg border border-slate-200 bg-white p-6 shadow-sm",
-            errorMessage && "border-red-300 bg-red-50"
-          )}
-        >
-          {snapshot && !showLoginForm ? (
-            <div className="space-y-3">
-              <p className="font-medium">{snapshot.session.username}</p>
-              <p className="text-sm text-slate-600">
-                Sessione permanente attiva
-              </p>
-              <Button
-                variant="outline"
-                disabled={createSession.isPending || restoring}
-                onClick={() => setShowLoginForm(true)}
-              >
-                Cambia sessione
-              </Button>
-              <Button
-                variant="destructive"
-                disabled={deleteSession.isPending}
-                onClick={() => void removeSession()}
-              >
-                Elimina sessione
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="payroll-username">Username</Label>
-              <Input id="payroll-username" name="username" ref={usernameRef} />
-
-              <Label htmlFor="payroll-password">Password</Label>
-              <Input
-                id="payroll-password"
-                name="password"
-                type="password"
-                ref={passwordRef}
-              />
-
-              <Button
-                className="mt-3"
-                onClick={() => void login()}
-                disabled={createSession.isPending || restoring}
-              >
-                {createSession.isPending ? "Accesso in corso..." : "Accedi"}
-              </Button>
-              {snapshot ? (
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowLoginForm(false)}
-                >
-                  Annulla
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </section>
-
-        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900">
-            Sessione e batch
-          </h2>
-          <div className="mt-3 flex items-center gap-3 text-sm text-slate-600">
-            {restoring ? (
-              <LoadingSpinner />
-            ) : snapshot ? (
-              <>
-                Sessione caricata
-                <CheckCheckIcon className="text-green-600" />
-              </>
-            ) : errorMessage ? (
-              <span className="text-red-700">{errorMessage}</span>
-            ) : (
-              <span>Accedi per gestire i batch.</span>
+      <main className="mx-auto   max-w-6xl    ">
+        <h1 className="text-2xl font-semibold text-slate-900">
+          Analisi Buste Paga
+        </h1>
+        <div className="grid gap-5 
+         grid-cols-5">
+          <Card
+            className={cn(
+              "",
+              " bg-card row-span-4 ",
+              "rounded-lg    border-stone-200   p-6 shadow",
+              errorMessage && "border-red-300 bg-red-50"
             )}
-          </div>
+          >
+            {snapshot && !showLoginForm ? (
+              <CardHeader className=" px-0">
+                <CardTitle className="font-medium">{snapshot.session.username}</CardTitle>
+                <p className="text-sm text-slate-600">
+                  Sessione permanente attiva
+                </p>
+                <Button
+                  variant="outline"
+                  disabled={createSession.isPending || restoring}
+                  onClick={() => setShowLoginForm(true)}
+                >
+                  Cambia sessione
+                </Button>
+                <Button
+                  variant="destructive"
+                  disabled={deleteSession.isPending}
+                  onClick={() => void removeSession()}
+                >
+                  Elimina sessione
+                </Button>
+              </CardHeader>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="payroll-username">Username</Label>
+                <Input id="payroll-username" name="username" ref={usernameRef} />
 
-          {snapshot ? (
-            <Crawler
-              snapshot={snapshot}
-              connectionState={connectionState}
-              refresh={refresh}
-            />
-          ) : null}
-        </section>
+                <Label htmlFor="payroll-password">Password</Label>
+                <Input
+                  id="payroll-password"
+                  name="password"
+                  type="password"
+                  ref={passwordRef}
+                />
+
+                <Button
+                  className="mt-3"
+                  onClick={() => void login()}
+                  disabled={createSession.isPending || restoring}
+                >
+                  {createSession.isPending ? "Accesso in corso..." : "Accedi"}
+                </Button>
+                {snapshot ? (
+                  <Button
+                    variant="ghost"
+                    onClick={() => setShowLoginForm(false)}
+                  >
+                    Annulla
+                  </Button>
+                ) : null}
+              </div>
+            )}
+          </Card>
+
+          <section className="
+        col-span-4
+        rounded-lg border p-6 bg-card">
+            <h2 className="text-xl font-semibold text-slate-900">
+              Sessione e batch
+            </h2>
+            <div className="mt-3 flex items-center gap-3 text-sm text-slate-600">
+              {restoring ? (
+                <LoadingSpinner />
+              ) : snapshot ? (
+                <>
+                  Sessione caricata
+                  <CheckCheckIcon className="text-green-600" />
+                </>
+              ) : errorMessage ? (
+                <span className="text-red-700">{errorMessage}</span>
+              ) : (
+                <span>Accedi per gestire i batch.</span>
+              )}
+            </div>
+
+            {snapshot ? (
+              <Crawler
+                snapshot={snapshot}
+                connectionState={connectionState}
+                refresh={refresh}
+              />
+            ) : null}
+          </section>
+          <Card className="col-span-4">
+            <CardHeader>
+              <CardTitle>Active Job Troubleshooting</CardTitle>
+              <CardDescription>
+                Live crawler logs for the active or most recent job
+              </CardDescription>
+              <CardAction>
+                <span
+                  className={cn(
+                    "inline-flex size-2 rounded-full",
+                    connectionState === "connected"
+                      ? "bg-emerald-500"
+                      : "bg-amber-500"
+                  )}
+                  title={`SSE ${connectionState}`}
+                />
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              <JobTerminal snapshot={snapshot} />
+            </CardContent>
+            <CardFooter className="text-xs text-muted-foreground">
+              Credentials and request payloads are never included in these logs.
+            </CardFooter>
+          </Card>
+           
+        </div>
       </main>
     </div>
   );

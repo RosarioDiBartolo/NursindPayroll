@@ -129,6 +129,12 @@ class CrawlJob(db.Model):
     expires_at = db.Column(db.DateTime(timezone=True))
 
     batch = db.relationship("CrawlBatch", back_populates="jobs")
+    logs = db.relationship(
+        "CrawlJobLog",
+        back_populates="job",
+        cascade="all, delete-orphan",
+        order_by="CrawlJobLog.created_at",
+    )
 
     def to_dict(self):
         return {
@@ -153,4 +159,30 @@ class CrawlJob(db.Model):
                 if self.status == "completed"
                 else None
             ),
+            "logs": [entry.to_dict() for entry in self.logs[-200:]],
+        }
+
+
+class CrawlJobLog(db.Model):
+    __tablename__ = "crawl_job_logs"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    job_id = db.Column(
+        db.String(36),
+        db.ForeignKey("crawl_jobs.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    level = db.Column(db.String(16), nullable=False, default="info")
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=utcnow)
+
+    job = db.relationship("CrawlJob", back_populates="logs")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "level": self.level,
+            "message": self.message,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }

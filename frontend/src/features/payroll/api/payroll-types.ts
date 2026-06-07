@@ -36,6 +36,13 @@ export type PayrollBatchStatus =
   | "completed"
   | "delete_requested";
 
+export interface PayrollJobLog {
+  id: number;
+  level: "info" | "warning" | "error";
+  message: string;
+  created_at: string;
+}
+
 export interface PayrollJob {
   id: string;
   session_id: string;
@@ -52,6 +59,7 @@ export interface PayrollJob {
   completed_at: string | null;
   expires_at: string | null;
   download_url: string | null;
+  logs: PayrollJobLog[];
 }
 
 export interface PayrollBatch {

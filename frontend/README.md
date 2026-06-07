@@ -35,6 +35,18 @@ npm test
 npm run lint
 ```
 
+## Componenti UI
+
+Il frontend usa Tailwind CSS 4 tramite il plugin Vite e shadcn/ui CLI 4.
+Per aggiungere un componente:
+
+```sh
+npx shadcn@latest add card
+```
+
+La configurazione si trova in `components.json`; tema e token globali sono in
+`src/index.css`.
+
 ## Deployment
 
 L'immagine di produzione compila l'app Vite e la serve con Nginx. Nginx inoltra
