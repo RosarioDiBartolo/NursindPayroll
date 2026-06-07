@@ -8,3 +8,4 @@ redis==7.1.0
 requests==2.34.2
 rq==2.6.1
 SQLAlchemy==2.0.50
+python-dotenv==1.2.1
