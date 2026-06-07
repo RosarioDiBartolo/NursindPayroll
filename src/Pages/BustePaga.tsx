@@ -1,118 +1,121 @@
 import { useEffect, useRef, useState } from "react";
-import Navbar from "@/components/widgets/Navbar";
 import { CheckCheckIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Crawler from "@/components/widgets/Crawler";
-import { BustePagaContext } from "./Context";
-import apiClient, { cn } from "@/lib/utils";
-
-interface AuthState {
-  type: "loading" | "success" | "error" | "undefined";
-  message?: string;
-}
+import Navbar from "@/components/widgets/Navbar";
+import {
+  useCreatePayrollSession,
+  useDeletePayrollSession,
+} from "@/features/payroll/query/payroll-hooks";
+import { cn } from "@/lib/utils";
 
 function BustePaga() {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [sessionId, setSessionId] = useState<string>();
-  const [username, setUsername] = useState<string>();
-  const [userStatus, setUserStatus] = useState<AuthState>({
-    type: "undefined",
-  });
+  const [validationError, setValidationError] = useState<string>();
+  const createSession = useCreatePayrollSession();
+  const deleteSession = useDeletePayrollSession();
+  const deleteSessionMutate = deleteSession.mutate;
+  const session = createSession.data;
 
   useEffect(() => {
+    const sessionId = session?.id;
     return () => {
       if (sessionId) {
-        void apiClient.delete(`/crawl-sessions/${sessionId}`);
+        deleteSessionMutate(sessionId);
       }
     };
-  }, [sessionId]);
+  }, [deleteSessionMutate, session?.id]);
 
   const login = async () => {
-    const nextUsername = usernameRef.current?.value.trim() ?? "";
+    const username = usernameRef.current?.value.trim() ?? "";
     const password = passwordRef.current?.value ?? "";
-    if (!nextUsername || !password) {
-      setUserStatus({ type: "error", message: "Inserisci username e password." });
+    if (!username || !password) {
+      setValidationError("Inserisci username e password.");
       return;
     }
 
-    setUserStatus({ type: "loading" });
+    setValidationError(undefined);
+    if (session) {
+      await deleteSession.mutateAsync(session.id);
+      createSession.reset();
+    }
+
     try {
-      if (sessionId) {
-        await apiClient.delete(`/crawl-sessions/${sessionId}`);
+      await createSession.mutateAsync({ username, password });
+      if (passwordRef.current) {
+        passwordRef.current.value = "";
       }
-      const response = await apiClient.post<{ id: string }>("/crawl-sessions", {
-        username: nextUsername,
-        password,
-      });
-      passwordRef.current!.value = "";
-      setSessionId(response.data.id);
-      setUsername(nextUsername);
-      setUserStatus({ type: "success" });
     } catch {
-      setSessionId(undefined);
-      setUsername(undefined);
-      setUserStatus({
-        type: "error",
-        message: "Autenticazione al portale non riuscita.",
-      });
+      // React Query exposes the normalized error through createSession.error.
     }
   };
 
-  return (
-    <BustePagaContext.Provider value={{ sessionId, username }}>
-      <div className="w-screen h-screen flex p-16 bg-slate-400">
-        <div className="w-full h-full flex">
-          <div
-            className={cn(
-              "min-w-80 h-full border-solid shadow-lg border border-gray-400 rounded-sm p-8 bg-gradient-to-b flex flex-col gap-3",
-              userStatus.type === "error" ? "from-red-200" : "from-slate-200"
-            )}
-          >
-            <Label className="text-sm">Username</Label>
-            <Input name="username" ref={usernameRef} />
+  const errorMessage =
+    validationError ??
+    (createSession.error
+      ? "Autenticazione al portale non riuscita."
+      : undefined);
 
-            <Label className="text-sm">Password</Label>
-            <Input name="password" type="password" ref={passwordRef} />
+  return (
+    <div className="min-h-screen bg-slate-100">
+      <Navbar />
+      <main className="mx-auto grid max-w-6xl gap-6 p-6 lg:grid-cols-[20rem_1fr]">
+        <section
+          className={cn(
+            "rounded-lg border border-slate-200 bg-white p-6 shadow-sm",
+            errorMessage && "border-red-300 bg-red-50"
+          )}
+        >
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="payroll-username">Username</Label>
+            <Input id="payroll-username" name="username" ref={usernameRef} />
+
+            <Label htmlFor="payroll-password">Password</Label>
+            <Input
+              id="payroll-password"
+              name="password"
+              type="password"
+              ref={passwordRef}
+            />
 
             <Button
-              className="flex items-center gap-2 m-3 my-6 hover:bg-slate-500 hover:text-slate-900"
-              onClick={login}
-              disabled={userStatus.type === "loading"}
+              className="mt-3"
+              onClick={() => void login()}
+              disabled={createSession.isPending || deleteSession.isPending}
             >
-              Login
+              {createSession.isPending ? "Accesso in corso..." : "Accedi"}
             </Button>
           </div>
-          <div className="flex-1 flex flex-col h-full">
-            <Navbar />
-            <div className="p-10 flex-1 bg-slate-200">
-              <h1 className="font-semibold text-xl">Stato operazione</h1>
-              <div className="text-sm opacity-65">
-                <span className="flex gap-3 items-center">
-                  {userStatus.type === "success" ? (
-                    <>
-                      Login effettuato con successo
-                      <CheckCheckIcon className="text-green-600" />
-                    </>
-                  ) : userStatus.type === "loading" ? (
-                    <LoadingSpinner />
-                  ) : userStatus.type === "error" ? (
-                    <>{userStatus.message}</>
-                  ) : (
-                    <>Accedi al portale per iniziare.</>
-                  )}
-                </span>
+        </section>
 
-                {userStatus.type === "success" ? <Crawler /> : null}
-              </div>
-            </div>
+        <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-900">
+            Stato operazione
+          </h2>
+          <div className="mt-3 flex items-center gap-3 text-sm text-slate-600">
+            {session ? (
+              <>
+                Login effettuato con successo
+                <CheckCheckIcon className="text-green-600" />
+              </>
+            ) : createSession.isPending ? (
+              <LoadingSpinner />
+            ) : errorMessage ? (
+              <span className="text-red-700">{errorMessage}</span>
+            ) : (
+              <span>Accedi al portale per iniziare.</span>
+            )}
           </div>
-        </div>
-      </div>
-    </BustePagaContext.Provider>
+
+          {session ? <Crawler sessionId={session.id} /> : null}
+        </section>
+      </main>
+    </div>
   );
 }
 

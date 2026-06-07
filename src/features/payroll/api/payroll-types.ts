@@ -5,6 +5,7 @@ export interface PayrollCredentials {
 
 export interface PayrollSession {
   id: string;
+  expires_in: number;
 }
 
 export interface PayrollPeriod {
@@ -21,8 +22,18 @@ export type PayrollJobStatus =
 
 export interface PayrollJob {
   id: string;
+  session_id: string;
+  username: string;
+  year: number;
+  month: number;
   status: PayrollJobStatus;
-  error?: string;
+  attempts: number;
+  error: string | null;
+  created_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  expires_at: string | null;
+  download_url: string | null;
 }
 
 export interface CreatePayrollJobInput extends PayrollPeriod {

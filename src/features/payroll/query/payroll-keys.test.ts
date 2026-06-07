@@ -9,9 +9,21 @@ import { payrollKeys } from "./payroll-keys";
 describe("payrollKeys", () => {
   it("builds stable hierarchical job keys", () => {
     expect(payrollKeys.all).toEqual(["payroll"]);
-    expect(payrollKeys.jobs()).toEqual(["payroll", "jobs"]);
-    expect(payrollKeys.job("job-123")).toEqual([
+    expect(payrollKeys.session("session-123")).toEqual([
       "payroll",
+      "session",
+      "session-123",
+    ]);
+    expect(payrollKeys.jobs("session-123")).toEqual([
+      "payroll",
+      "session",
+      "session-123",
+      "jobs",
+    ]);
+    expect(payrollKeys.job("session-123", "job-123")).toEqual([
+      "payroll",
+      "session",
+      "session-123",
       "jobs",
       "job-123",
     ]);

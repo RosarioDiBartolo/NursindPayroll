@@ -1,19 +1,15 @@
-export interface PayrollPeriod {
-  year: number;
-  month: number;
-}
+import type {
+  PayrollJobStatus,
+  PayrollPeriod,
+} from "@/features/payroll/api/payroll-types";
 
-export type CrawlStatus =
-  | "queued"
-  | "running"
-  | "completed"
-  | "failed"
-  | "expired";
+export type { PayrollPeriod };
+export type CrawlStatus = PayrollJobStatus;
 
 export interface CrawlState {
   period: PayrollPeriod;
   jobId?: string;
-  status: CrawlStatus;
+  status: PayrollJobStatus;
   error?: string;
 }
 
