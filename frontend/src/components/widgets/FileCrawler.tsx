@@ -8,6 +8,7 @@ const labels: Record<PayrollJob["status"], string> = {
   pending: "In attesa",
   queued: "In coda",
   running: "Elaborazione",
+  retry_wait: "Riprova tra poco",
   completed: "Completato",
   failed: "Errore",
   cancelled: "Annullato",
@@ -29,7 +30,9 @@ const FileCrawler = ({
       {(job.status === "queued" || job.status === "running") && (
         <LoadingSpinner />
       )}
-      {job.status === "pending" && <Clock3Icon className="h-4 w-4" />}
+      {(job.status === "pending" || job.status === "retry_wait") && (
+        <Clock3Icon className="h-4 w-4 text-amber-600" />
+      )}
       {job.status === "completed" && (
         <>
           <CheckCheckIcon className="h-4 w-4 text-green-600" />
@@ -46,6 +49,12 @@ const FileCrawler = ({
     </div>
     {job.error ? (
       <p className="w-full text-xs text-red-700">{job.error}</p>
+    ) : null}
+    {job.status === "retry_wait" && job.next_retry_at ? (
+      <p className="w-full text-xs text-amber-700">
+        Tentativo {job.attempts}. Prossimo retry:{" "}
+        {new Date(job.next_retry_at).toLocaleString("it-IT")}.
+      </p>
     ) : null}
   </div>
 );

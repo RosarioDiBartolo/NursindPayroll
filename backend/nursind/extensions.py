@@ -58,6 +58,9 @@ def migrate_current_schema() -> None:
         "sequence": (
             "ALTER TABLE crawl_jobs ADD COLUMN sequence INTEGER NOT NULL DEFAULT 0"
         ),
+        "next_retry_at": (
+            "ALTER TABLE crawl_jobs ADD COLUMN next_retry_at DATETIME"
+        ),
     }
     with db.engine.begin() as connection:
         for column, statement in migrations.items():

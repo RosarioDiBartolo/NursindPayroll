@@ -56,7 +56,11 @@ username gia noto riapre la sessione esistente e aggiorna le credenziali cifrate
 in Redis. Le credenziali restano fino all'eliminazione esplicita della sessione.
 Ogni sessione puo contenere piu batch con intervalli mensili scelti dall'utente.
 Il worker completa i mesi in ordine e non avvia il successivo se il precedente
-fallisce. Il frontend riceve gli aggiornamenti tramite SSE.
+fallisce. Ogni mese viene tentato fino a 5 volte immediatamente; dopo il quinto
+errore, lo stesso batch viene rimesso in coda una volta ogni ora finche il mese
+riesce oppure il batch viene annullato o eliminato. Durante l'attesa il worker
+resta disponibile per gli altri batch. Il frontend riceve gli aggiornamenti
+tramite SSE.
 
 `CRAWLER_TLS_VERIFY=false` resta intenzionalmente attivo finche la catena dei
 certificati del portale non viene verificata.

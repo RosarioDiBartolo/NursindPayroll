@@ -6,7 +6,6 @@ import {
   createPayrollSession,
   deletePayrollBatch,
   deletePayrollSession,
-  retryPayrollBatch,
 } from "../api/payroll-api";
 import type {
   CreatePayrollBatchInput,
@@ -32,13 +31,6 @@ export function useCreatePayrollBatch(sessionId: string) {
   return useMutation({
     mutationFn: (input: CreatePayrollBatchInput) =>
       createPayrollBatch(sessionId, input),
-    retry: false,
-  });
-}
-
-export function useRetryPayrollBatch() {
-  return useMutation({
-    mutationFn: (batchId: string) => retryPayrollBatch(batchId),
     retry: false,
   });
 }

@@ -12,7 +12,6 @@ from flask import (
     stream_with_context,
 )
 from redis.exceptions import RedisError
-from rq import Queue, Retry
 from sqlalchemy import text
 
 from .credentials import CredentialStore, CredentialStoreError
@@ -25,7 +24,7 @@ from .crawler import (
 from .extensions import db
 from .models import CrawlBatch, CrawlJob, CrawlSession, utcnow
 from .redis_client import get_redis
-from .tasks import delete_batch, delete_session, handle_batch_failure
+from .tasks import delete_batch, delete_session, enqueue_crawl_batch
 
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -68,17 +67,6 @@ def iter_periods(start_year: int, start_month: int, end_year: int, end_month: in
         if month == 13:
             year += 1
             month = 1
-
-
-def enqueue_batch(batch_id: str) -> None:
-    queue = Queue("crawl", connection=get_redis())
-    queue.enqueue(
-        "nursind.tasks.run_crawl_batch",
-        batch_id,
-        retry=Retry(max=2, interval=[30, 120]),
-        on_failure=handle_batch_failure,
-        job_timeout=current_app.config["BATCH_JOB_TIMEOUT_SECONDS"],
-    )
 
 
 def session_snapshot(session: CrawlSession) -> dict:
@@ -209,7 +197,7 @@ def create_crawl_batch(session_id: str):
     db.session.commit()
 
     try:
-        enqueue_batch(batch.id)
+        enqueue_crawl_batch(batch.id)
     except Exception:
         batch.status = "blocked"
         batch.error = "Job queue is unavailable"
@@ -228,36 +216,6 @@ def get_crawl_batch(batch_id: str):
     return jsonify(batch.to_dict(include_jobs=True))
 
 
-@api.post("/crawl-batches/<batch_id>/retry")
-def retry_crawl_batch(batch_id: str):
-    batch = db.session.get(CrawlBatch, batch_id)
-    if batch is None:
-        return error("Crawl batch not found", 404)
-    if batch.status != "blocked":
-        return error("Only blocked batches can be retried", 409)
-    if CredentialStore().get(batch.session_id) is None:
-        return error("Stored credentials are unavailable", 409)
-
-    failed = next((job for job in batch.jobs if job.status == "failed"), None)
-    if failed is None:
-        return error("No failed job is available to retry", 409)
-    failed.status = "queued"
-    failed.error = None
-    batch.status = "queued"
-    batch.error = None
-    batch.bump()
-    db.session.commit()
-    try:
-        enqueue_batch(batch.id)
-    except Exception:
-        batch.status = "blocked"
-        batch.error = "Job queue is unavailable"
-        batch.bump()
-        db.session.commit()
-        return error("Job queue is unavailable", 503)
-    return jsonify(batch.to_dict(include_jobs=True))
-
-
 @api.post("/crawl-batches/<batch_id>/cancel")
 def cancel_crawl_batch(batch_id: str):
     batch = db.session.get(CrawlBatch, batch_id)
@@ -270,8 +228,9 @@ def cancel_crawl_batch(batch_id: str):
         batch.bump()
     else:
         for job in batch.jobs:
-            if job.status in {"pending", "queued"}:
+            if job.status in {"pending", "queued", "retry_wait"}:
                 job.status = "cancelled"
+                job.next_retry_at = None
         batch.status = "cancelled"
         batch.error = None
         batch.bump()

@@ -16,7 +16,6 @@ import {
   useCancelPayrollBatch,
   useCreatePayrollBatch,
   useDeletePayrollBatch,
-  useRetryPayrollBatch,
 } from "@/features/payroll/query/payroll-hooks";
 
 interface CrawlerProps {
@@ -42,13 +41,11 @@ const Crawler = ({ snapshot, connectionState, refresh }: CrawlerProps) => {
   const [startMonth, setStartMonth] = useState("2000-01");
   const [endMonth, setEndMonth] = useState(currentMonth);
   const createBatch = useCreatePayrollBatch(snapshot.session.id);
-  const retryBatch = useRetryPayrollBatch();
   const cancelBatch = useCancelPayrollBatch();
   const deleteBatch = useDeletePayrollBatch();
 
   const isBusy =
     createBatch.isPending ||
-    retryBatch.isPending ||
     cancelBatch.isPending ||
     deleteBatch.isPending;
 
@@ -163,19 +160,7 @@ const Crawler = ({ snapshot, connectionState, refresh }: CrawlerProps) => {
                 ) : null}
               </div>
               <div className="flex flex-wrap gap-2">
-                {batch.status === "blocked" ? (
-                  <Button
-                    disabled={isBusy}
-                    onClick={() =>
-                      void retryBatch
-                        .mutateAsync(batch.id)
-                        .then(() => refresh())
-                    }
-                  >
-                    Riprova e riprendi
-                  </Button>
-                ) : null}
-                {["queued", "running", "cancel_requested"].includes(
+                {["queued", "running", "retry_wait", "cancel_requested"].includes(
                   batch.status
                 ) ? (
                   <Button

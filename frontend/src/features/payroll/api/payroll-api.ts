@@ -63,15 +63,6 @@ export function createPayrollBatch(
   });
 }
 
-export function retryPayrollBatch(batchId: string): Promise<PayrollBatch> {
-  return normalized(async () => {
-    const response = await apiClient.post<PayrollBatch>(
-      `/crawl-batches/${batchId}/retry`
-    );
-    return response.data;
-  });
-}
-
 export function cancelPayrollBatch(batchId: string): Promise<PayrollBatch> {
   return normalized(async () => {
     const response = await apiClient.post<PayrollBatch>(

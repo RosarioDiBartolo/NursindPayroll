@@ -20,6 +20,11 @@ function selectTroubleshootingJob(
   return (
     entries.find(({ job }) => job.status === "running") ??
     [...entries]
+      .filter(({ job }) => job.status === "retry_wait")
+      .sort(
+        (left, right) => jobTimestamp(right.job) - jobTimestamp(left.job)
+      )[0] ??
+    [...entries]
       .filter(({ job }) => job.status === "failed")
       .sort(
         (left, right) => jobTimestamp(right.job) - jobTimestamp(left.job)

@@ -22,6 +22,7 @@ export type PayrollJobStatus =
   | "pending"
   | "queued"
   | "running"
+  | "retry_wait"
   | "completed"
   | "failed"
   | "cancelled"
@@ -30,6 +31,7 @@ export type PayrollJobStatus =
 export type PayrollBatchStatus =
   | "queued"
   | "running"
+  | "retry_wait"
   | "blocked"
   | "cancel_requested"
   | "cancelled"
@@ -58,6 +60,7 @@ export interface PayrollJob {
   started_at: string | null;
   completed_at: string | null;
   expires_at: string | null;
+  next_retry_at: string | null;
   download_url: string | null;
   logs: PayrollJobLog[];
 }

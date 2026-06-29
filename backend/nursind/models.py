@@ -83,7 +83,9 @@ class CrawlBatch(db.Model):
             "completed": sum(1 for job in jobs if job.status == "completed"),
             "failed": sum(1 for job in jobs if job.status == "failed"),
             "pending": sum(
-                1 for job in jobs if job.status in {"pending", "queued", "running"}
+                1
+                for job in jobs
+                if job.status in {"pending", "queued", "running", "retry_wait"}
             ),
         }
         payload = {
@@ -127,6 +129,7 @@ class CrawlJob(db.Model):
     started_at = db.Column(db.DateTime(timezone=True))
     completed_at = db.Column(db.DateTime(timezone=True))
     expires_at = db.Column(db.DateTime(timezone=True))
+    next_retry_at = db.Column(db.DateTime(timezone=True))
 
     batch = db.relationship("CrawlBatch", back_populates="jobs")
     logs = db.relationship(
@@ -154,6 +157,9 @@ class CrawlJob(db.Model):
                 self.completed_at.isoformat() if self.completed_at else None
             ),
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
+            "next_retry_at": (
+                self.next_retry_at.isoformat() if self.next_retry_at else None
+            ),
             "download_url": (
                 f"/api/crawl-jobs/{self.id}/download"
                 if self.status == "completed"

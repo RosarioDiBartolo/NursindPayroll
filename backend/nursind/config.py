@@ -31,6 +31,12 @@ class Config:
     BATCH_JOB_TIMEOUT_SECONDS = int(
         os.getenv("BATCH_JOB_TIMEOUT_SECONDS", "43200")
     )
+    CRAWL_JOB_IMMEDIATE_ATTEMPTS = int(
+        os.getenv("CRAWL_JOB_IMMEDIATE_ATTEMPTS", "5")
+    )
+    CRAWL_JOB_RETRY_DELAY_SECONDS = int(
+        os.getenv("CRAWL_JOB_RETRY_DELAY_SECONDS", "3600")
+    )
     CRAWLER_BASE_URL = os.getenv(
         "CRAWLER_BASE_URL",
         "https://sportellodipendenti.policlinicorodolicosanmarco.it/gp4web",

@@ -41,6 +41,9 @@ class FakeQueue:
     def enqueue(self, *args, **kwargs):
         self.calls.append((args, kwargs))
 
+    def enqueue_in(self, delay, *args, **kwargs):
+        self.calls.append(((delay, *args), kwargs))
+
 
 @pytest.fixture(autouse=True)
 def fake_dependencies(monkeypatch):
@@ -49,7 +52,7 @@ def fake_dependencies(monkeypatch):
     monkeypatch.setattr("nursind.routes.CredentialStore", FakeCredentials)
     monkeypatch.setattr("nursind.tasks.CredentialStore", FakeCredentials)
     monkeypatch.setattr("nursind.routes.crawler_from_config", lambda _config: FakeCrawler())
-    monkeypatch.setattr("nursind.routes.Queue", FakeQueue)
+    monkeypatch.setattr("nursind.tasks.Queue", FakeQueue)
 
 
 def create_session(client):
@@ -88,6 +91,8 @@ def test_create_session_and_explicit_month_range(client):
         "pending",
     ]
     assert FakeQueue.calls
+    _, enqueue_options = FakeQueue.calls[0]
+    assert "retry" not in enqueue_options
 
     invalid = client.post(
         f"/api/crawl-sessions/{session_id}/batches",
@@ -200,3 +205,45 @@ def test_download_rejects_expired_output(app, client, tmp_path):
 
     response = client.get(f"/api/crawl-jobs/{job_id}/download")
     assert response.status_code == 410
+
+
+def test_waiting_retry_is_serialized_and_can_be_cancelled(app, client):
+    session_id = create_session(client)
+    with app.app_context():
+        batch = CrawlBatch(
+            session_id=session_id,
+            start_year=2019,
+            start_month=1,
+            end_year=2019,
+            end_month=1,
+            status="retry_wait",
+        )
+        job = CrawlJob(
+            session_id=session_id,
+            batch=batch,
+            username="user",
+            year=2019,
+            month=1,
+            status="retry_wait",
+            attempts=5,
+            next_retry_at=utcnow() + timedelta(hours=1),
+        )
+        db.session.add_all([batch, job])
+        db.session.commit()
+        batch_id = batch.id
+
+    snapshot = client.get(f"/api/crawl-batches/{batch_id}").get_json()
+    assert snapshot["status"] == "retry_wait"
+    assert snapshot["counts"]["pending"] == 1
+    assert snapshot["jobs"][0]["next_retry_at"] is not None
+
+    cancelled = client.post(f"/api/crawl-batches/{batch_id}/cancel")
+    assert cancelled.status_code == 200
+    payload = cancelled.get_json()
+    assert payload["status"] == "cancelled"
+    assert payload["jobs"][0]["status"] == "cancelled"
+    assert payload["jobs"][0]["next_retry_at"] is None
+
+
+def test_manual_retry_endpoint_is_removed(client):
+    assert client.post("/api/crawl-batches/missing/retry").status_code == 404

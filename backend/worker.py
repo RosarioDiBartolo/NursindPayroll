@@ -9,4 +9,4 @@ app = create_app()
 with app.app_context():
     connection = Redis.from_url(app.config["REDIS_URL"])
     worker = Worker([Queue("crawl", connection=connection)], connection=connection)
-    worker.work()
+    worker.work(with_scheduler=True)

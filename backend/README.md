@@ -4,6 +4,10 @@ Flask API and RQ worker for permanent crawl sessions and autonomous,
 strictly-sequential payroll batches. Session state is streamed to clients over
 server-sent events.
 
+Each monthly job gets five immediate attempts. Further failures schedule the
+same batch through RQ once per hour, releasing the worker to process other
+batches while it waits.
+
 ## Local development
 
 Docker Compose from the repository root is the supported startup method. For a
